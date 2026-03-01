@@ -185,65 +185,52 @@ function UnitModal({ unit, onClose }: { unit: Unit; onClose: () => void }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+      className="fixed inset-0 z-[200] flex items-center justify-center p-2 sm:p-6 md:p-10"
       onClick={onClose}
     >
       <div className="absolute inset-0 bg-[#060914]/95 backdrop-blur-2xl" />
       <motion.div
-        initial={{ scale: 0.92, y: 30 }}
+        initial={{ scale: 0.95, y: 20 }}
         animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.93, y: 20 }}
+        exit={{ scale: 0.95, y: 20 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         onClick={(e) => e.stopPropagation()}
-        className="relative z-10 max-w-3xl w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-[#c9a84c]/20 bg-gradient-to-br from-[#141218] to-[#0e0c12] max-h-[90vh] overflow-y-auto"
+        className="relative z-10 w-full h-full max-h-[90vh] bg-[#060914] rounded-2xl sm:rounded-3xl border border-white/10 overflow-hidden shadow-2xl flex flex-col"
       >
-        {/* Image */}
-        <div className="relative h-40 sm:h-60 overflow-hidden">
-          <Image src={unit.image} alt={unit.label} fill sizes="(max-width: 768px) 100vw, 800px" className="object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#141218] via-transparent to-transparent" />
-          <button onClick={onClose} className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[#060914]/70 border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-white/40 transition-all backdrop-blur-sm">
-            <X className="w-4 h-4" />
+        {/* Fullscreen Image Container */}
+        <div className="relative flex-1 w-full h-full min-h-0 bg-white/5 flex items-center justify-center p-4 sm:p-8">
+          <div className="relative w-full h-full flex items-center justify-center">
+            <Image
+              src={unit.image}
+              alt={unit.label}
+              fill
+              sizes="100vw"
+              className="object-contain"
+            />
+          </div>
+
+          {/* Subtle bottom gradient for text legibility */}
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#060914]/90 to-transparent pointer-events-none" />
+
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 sm:top-6 right-4 sm:right-6 w-10 h-10 rounded-full bg-[#060914]/70 border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:bg-[#c9a84c]/20 hover:border-[#c9a84c]/50 transition-all backdrop-blur-md z-50 shadow-xl"
+            aria-label="Close modal"
+          >
+            <X className="w-5 h-5" />
           </button>
-          <div className="absolute bottom-4 left-6">
-            <div className="text-[10px] uppercase tracking-widest text-[#c9a84c] font-bold mb-1">{unit.type} — {unit.label}</div>
-            <div className="text-2xl font-heading font-black text-white">{unit.sqft} sq.ft.</div>
-          </div>
-        </div>
 
-        <div className="p-4 sm:p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-5 sm:mb-6">
-            {[
-              { label: "Size", value: `${unit.sqft} sq.ft.`, icon: Maximize2 },
-              { label: "Floor", value: unit.floors, icon: Building2 },
-              { label: "Price", value: unit.price, icon: Star },
-            ].map((s) => (
-              <div key={s.label} className="flex flex-col items-center p-3 rounded-xl bg-white/5 border border-white/8 text-center gap-1">
-                <s.icon className="w-4 h-4 text-[#c9a84c]" />
-                <div className="text-sm font-bold text-white">{s.value}</div>
-                <div className="text-[10px] uppercase tracking-widest text-white/40">{s.label}</div>
+          {/* Essential Info Overlay */}
+          <div className="absolute bottom-6 sm:bottom-10 left-6 sm:left-10 right-6 sm:right-10 pointer-events-none z-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <div className="bg-[#060914] border border-[#c9a84c]/20 rounded-2xl p-4 sm:p-5 sm:max-w-max backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.8)]">
+              <div className="inline-flex px-3 py-1 bg-[#c9a84c]/20 border border-[#c9a84c]/30 text-[#e6c154] text-xs font-semibold uppercase tracking-widest rounded-full mb-2">
+                {unit.type} — {unit.label}
               </div>
-            ))}
-          </div>
-
-          <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-5 sm:mb-6">
-            {unit.features.map((f) => (
-              <span key={f} className="feature-tag">{f}</span>
-            ))}
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
-            <a
-              href={`https://wa.me/60112880808?text=Hi%2C%20I%27m%20interested%20in%20${encodeURIComponent(unit.type)}%20at%20Pavilion%20Square%20KL`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-gold flex-1 rounded-xl py-3 sm:py-3.5"
-            >
-              <MessageSquare className="w-4 h-4" />
-              Enquire on WhatsApp
-            </a>
-            <a href="#contact" onClick={onClose} className="btn-ghost-gold flex-1 rounded-xl py-3 sm:py-3.5">
-              Register Interest
-            </a>
+              <div className="text-4xl sm:text-6xl font-heading font-black text-white tracking-tight">
+                {unit.sqft} <span className="text-2xl sm:text-4xl text-white/50 font-light tracking-normal">sq.ft.</span>
+              </div>
+            </div>
           </div>
         </div>
       </motion.div>
