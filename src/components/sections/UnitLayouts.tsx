@@ -3,93 +3,126 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { BedDouble, Bath, Maximize2, ChevronLeft, ChevronRight, X, ArrowRight, MessageSquare, Building2, Star, Eye } from "lucide-react";
+import { BedDouble, Bath, Maximize2, ChevronLeft, ChevronRight, X, ArrowRight, MessageSquare, Building2, Star, Eye, Home, Sparkles, UtensilsCrossed, Sunset, TreePine, LayoutGrid, Sofa } from "lucide-react";
 
-/* ── Unit types ──────────────────────────────────────── */
+/* ── Feature icon map ─────────────────────────────── */
+const FEATURE_CONFIG: Record<string, { icon: React.ElementType }> = {
+  "Open-plan layout": { icon: LayoutGrid },
+  "Premium finishes": { icon: Sparkles },
+  "City view": { icon: Building2 },
+  "Fully furnished": { icon: Home },
+  "Separate bedroom": { icon: BedDouble },
+  "Balcony": { icon: Sunset },
+  "Designer kitchen": { icon: UtensilsCrossed },
+  "Flexi room": { icon: LayoutGrid },
+  "Generous living area": { icon: Sofa },
+  "Wraparound views": { icon: Sunset },
+  "Luxury bathroom": { icon: Bath },
+  "Dual master": { icon: BedDouble },
+  "Full kitchen": { icon: UtensilsCrossed },
+  "Entertainment area": { icon: Sofa },
+  "Corner unit": { icon: LayoutGrid },
+  "Panoramic views": { icon: Sunset },
+  "Double vanity": { icon: Bath },
+  "Premium floor level": { icon: Building2 },
+  "Extended balcony": { icon: Sunset },
+  "High-spec fit-out": { icon: Sparkles },
+  "Dual-aspect view": { icon: Sunset },
+  "Walk-in wardrobe": { icon: Star },
+  "Luxury bathtub": { icon: Bath },
+  "Flagship unit": { icon: Star },
+  "Sky views all sides": { icon: Sunset },
+  "3 en-suite baths": { icon: Bath },
+};
+const defaultFeatureCfg = { icon: Sparkles };
+
+/* ── Unit types (as per official Pavilion Square KL floor plans) ── */
 const residentialUnits = [
   {
     type: "Type A", label: "Studio",
     sqft: 504, sqm: 46.8, beds: 0, baths: 1,
-    floors: "L13A–37 & L39–62",
+    floors: "Residential Tower",
     image: "/page_15_img_1.jpeg",
     bgImage: "/page_15_img_1.jpeg",
-    price: "From RM 800K",
+    price: "Contact for Price",
     features: ["Open-plan layout", "Premium finishes", "City view", "Fully furnished"],
     highlight: false,
   },
   {
-    type: "Type B1", label: "1 Bedroom",
-    sqft: 614, sqm: 57.0, beds: 1, baths: 1,
-    floors: "L13A–62",
+    type: "Type B1", label: "1+1 Rooms",
+    sqft: 770, sqm: 71.5, beds: 1, baths: 1,
+    floors: "Residential Tower",
     image: "/page_15_img_2.jpeg",
     bgImage: "/page_15_img_2.jpeg",
-    price: "From RM 980K",
-    features: ["Separate bedroom", "Balcony", "Designer kitchen", "Fully furnished"],
+    price: "Contact for Price",
+    features: ["Separate bedroom", "Flexi room", "Designer kitchen", "Fully furnished"],
     highlight: false,
   },
   {
-    type: "Type B2", label: "1 Bedroom",
-    sqft: 678, sqm: 63.0, beds: 1, baths: 1,
-    floors: "L13A–62",
+    type: "Type B2", label: "1+1 Rooms",
+    sqft: 772, sqm: 71.7, beds: 1, baths: 1,
+    floors: "Residential Tower",
     image: "/page_15_img_3.jpeg",
     bgImage: "/page_15_img_3.jpeg",
-    price: "From RM 1.1M",
-    features: ["Generous living area", "Wraparound views", "Luxury bathroom", "Fully furnished"],
+    price: "Contact for Price",
+    features: ["Separate bedroom", "Flexi room", "Balcony", "Fully furnished"],
     highlight: false,
   },
   {
-    type: "Type C1", label: "2 Bedrooms",
-    sqft: 872, sqm: 81.0, beds: 2, baths: 2,
-    floors: "L13A–62",
+    type: "Type B3", label: "2 Rooms",
+    sqft: 966, sqm: 89.7, beds: 2, baths: 2,
+    floors: "Residential Tower",
     image: "/page_15_img_4.jpeg",
     bgImage: "/page_15_img_4.jpeg",
-    price: "From RM 1.4M",
+    price: "Contact for Price",
     features: ["Dual master", "Full kitchen", "Entertainment area", "Fully furnished"],
     highlight: true,
   },
   {
-    type: "Type C2", label: "2 Bedrooms",
-    sqft: 958, sqm: 89.0, beds: 2, baths: 2,
-    floors: "L13A–62",
+    type: "Type C1", label: "2+1 Rooms",
+    sqft: 978, sqm: 90.9, beds: 2, baths: 2,
+    floors: "Residential Tower",
     image: "/page_15_img_5.jpeg",
     bgImage: "/page_15_img_5.jpeg",
-    price: "From RM 1.55M",
-    features: ["Corner unit", "Panoramic views", "Double vanity", "Fully furnished"],
+    price: "Contact for Price",
+    features: ["Flexi room", "Panoramic views", "Double vanity", "Fully furnished"],
     highlight: false,
   },
   {
-    type: "Type C3", label: "2 Bedrooms",
-    sqft: 1023, sqm: 95.0, beds: 2, baths: 2,
-    floors: "L13A–62",
+    type: "Type C2", label: "2+1 Rooms",
+    sqft: 1100, sqm: 102.2, beds: 2, baths: 2,
+    floors: "Residential Tower",
     image: "/page_15_img_1.jpeg",
     bgImage: "/page_15_img_1.jpeg",
-    price: "From RM 1.65M",
+    price: "Contact for Price",
     features: ["Premium floor level", "Extended balcony", "High-spec fit-out", "Fully furnished"],
     highlight: false,
   },
   {
-    type: "Type C4", label: "2 Bedrooms",
-    sqft: 1131, sqm: 105.1, beds: 2, baths: 2,
-    floors: "L13A–62",
+    type: "Type C3", label: "2+1 Rooms",
+    sqft: 1272, sqm: 118.2, beds: 2, baths: 2,
+    floors: "Residential Tower",
     image: "/page_15_img_2.jpeg",
     bgImage: "/page_15_img_2.jpeg",
-    price: "From RM 1.8M",
+    price: "Contact for Price",
     features: ["Dual-aspect view", "Walk-in wardrobe", "Luxury bathtub", "Fully furnished"],
-    highlight: false,
+    highlight: true,
   },
   {
-    type: "Type D", label: "3 Bedrooms",
-    sqft: 1272, sqm: 118.2, beds: 3, baths: 3,
-    floors: "L13A–62",
+    type: "Type D", label: "3 Rooms",
+    sqft: 1255, sqm: 116.6, beds: 3, baths: 3,
+    floors: "Residential Tower",
     image: "/page_15_img_4.jpeg",
     bgImage: "/page_15_img_4.jpeg",
-    price: "From RM 2.1M",
+    price: "Contact for Price",
     features: ["Flagship unit", "Sky views all sides", "3 en-suite baths", "Fully furnished"],
     highlight: true,
   },
 ];
 
-const corporateUnits = [
+const corporateUnits: typeof residentialUnits = [];
+
+const _corporateUnitsUnused = [
   {
     type: "Office 1", label: "Corporate Suite",
     sqft: 2464, sqm: 228.9, beds: 0, baths: 2,
@@ -219,15 +252,11 @@ function UnitModal({ unit, onClose }: { unit: Unit; onClose: () => void }) {
 }
 
 export default function UnitLayouts() {
-  const [tab, setTab] = useState<"residential" | "corporate">("residential");
-  const units = tab === "residential" ? residentialUnits : corporateUnits;
+  const units = residentialUnits;
   const [activeIdx, setActiveIdx] = useState(0);
   const [modalUnit, setModalUnit] = useState<Unit | null>(null);
   const [paused, setPaused] = useState(false);
   const activeUnit = units[activeIdx] as Unit;
-
-  /* Reset when tab changes */
-  useEffect(() => { setActiveIdx(0); }, [tab]);
 
   /* Auto-advance */
   useEffect(() => {
@@ -239,25 +268,25 @@ export default function UnitLayouts() {
   const select = (i: number) => { setActiveIdx(i); setPaused(true); setTimeout(() => setPaused(false), 10000); };
 
   return (
-    <section id="units" className="relative min-h-screen overflow-hidden bg-[#060914]">
+    <section id="units" className="relative min-h-[90vh] overflow-hidden bg-[#060914] flex flex-col justify-center">
 
       {/* Dynamic bg per unit */}
       <AnimatePresence>
-        <UnitBg key={`${tab}-${activeIdx}`} unit={activeUnit} />
+        <UnitBg key={`unit-${activeIdx}`} unit={activeUnit} />
       </AnimatePresence>
 
-      <div className="relative z-10 min-h-screen flex flex-col max-w-7xl mx-auto w-full px-4 sm:px-6 py-20 sm:py-28">
+      <div className="relative z-10 w-full flex flex-col max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-16">
 
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="section-badge mb-5"
+            className="section-badge mb-3"
           >
             <Building2 className="w-3 h-3" />
-            Residences & Corporate Suites
+            Luxury Residences
           </motion.div>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <motion.h2
@@ -265,164 +294,236 @@ export default function UnitLayouts() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="text-2xl sm:text-4xl md:text-5xl font-heading font-black text-white leading-tight"
+              className="text-2xl sm:text-3xl md:text-5xl font-heading font-black text-white leading-tight"
             >
               Unit <em style={{ fontStyle: "normal", WebkitTextFillColor: "transparent", background: "linear-gradient(135deg,#c9a84c,#ffd700)", WebkitBackgroundClip: "text", backgroundClip: "text" }}>Layouts</em>
             </motion.h2>
 
-            {/* Tab switcher */}
-            <div className="flex gap-1 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 w-fit">
-              {(["residential", "corporate"] as const).map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setTab(t)}
-                  className={`relative px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[10px] sm:text-xs uppercase tracking-widest font-bold transition-all duration-350 ${tab === t ? "bg-gradient-to-r from-[#c9a84c] to-[#ffd700] text-[#060914] shadow-[0_4px_16px_rgba(201,168,76,0.3)]" : "text-white/50 hover:text-white/80"}`}
-                >
-                  {t === "residential" ? "Luxury Residences" : "Corporate Suites"}
-                </button>
-              ))}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#c9a84c]/10 border border-[#c9a84c]/30 text-[#c9a84c] text-[10px] uppercase tracking-widest font-bold">
+              <Star className="w-3 h-3" /> {units.length} Unit Types Available
             </div>
           </div>
           <div className="section-divider mt-4" />
         </div>
 
-        {/* Main grid */}
-        <div className="flex-1 grid lg:grid-cols-5 gap-8">
-
-          {/* Unit list — scrollable */}
-          <div className="lg:col-span-2 flex lg:flex-col gap-2 overflow-x-auto lg:overflow-y-auto lg:max-h-[70vh] pr-0 lg:pr-1 pb-2 lg:pb-0 scrollbar-hide">
-            <AnimatePresence mode="popLayout">
-              {units.map((u, i) => (
-                <motion.button
-                  key={u.type}
-                  layout
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -30 }}
-                  transition={{ duration: 0.4, delay: i * 0.05 }}
-                  onClick={() => select(i)}
-                  className={`group relative text-left p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border transition-all duration-400 min-w-[160px] sm:min-w-[200px] lg:min-w-0 flex-shrink-0 lg:flex-shrink ${i === activeIdx
-                    ? "border-[#c9a84c]/40 bg-gradient-to-r from-[#c9a84c]/12 to-[#c9a84c]/4 shadow-[0_0_24px_rgba(201,168,76,0.08)]"
-                    : "border-white/8 bg-white/5 hover:border-white/18 hover:bg-white/8"}`}
-                >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <div className="flex items-center gap-2">
-                      <span className={`text-[10px] uppercase tracking-widest font-bold ${i === activeIdx ? "text-[#c9a84c]" : "text-white/40 group-hover:text-white/60"}`}>
-                        {(u as Unit).type}
-                      </span>
-                      {(u as Unit).highlight && (
-                        <span className="text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#c9a84c]/15 border border-[#c9a84c]/30 text-[#c9a84c] font-semibold">Popular</span>
+        {/* Unit tabs — two rows: first 4 in row 1, last 4 in row 2 */}
+        <div className="flex flex-col gap-2 mb-4 sm:mb-6 pb-4 border-b border-white/10">
+          {[units.slice(0, 4), units.slice(4)].map((row, rowIdx) =>
+            row.length > 0 ? (
+              <div key={rowIdx} className="flex gap-2 flex-nowrap overflow-x-auto scrollbar-hide">
+                {row.map((u, localIdx) => {
+                  const i = rowIdx * 4 + localIdx;
+                  const isActive = i === activeIdx;
+                  return (
+                    <motion.button
+                      key={u.type}
+                      onClick={() => select(i)}
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.96 }}
+                      className={`tab-pill relative overflow-hidden ${isActive ? "active" : ""
+                        }`}
+                    >
+                      {isActive && (
+                        <motion.span
+                          layoutId="pill-active-bg"
+                          className="absolute inset-0 rounded-full bg-gradient-to-r from-[#c9a84c]/15 to-[#ffd700]/10"
+                          transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                        />
                       )}
+                      <span className="relative mr-1 text-[10px] font-black text-[#c9a84c] whitespace-nowrap tracking-wider">{u.type}</span>
+                      <span className="relative whitespace-nowrap text-[11px]">· {u.label}</span>
+                    </motion.button>
+                  );
+                })}
+              </div>
+            ) : null
+          )}
+        </div>
+
+        {/* Main content area */}
+        <div className="flex-1 grid lg:grid-cols-12 gap-4 sm:gap-6 items-stretch align-middle">
+
+          {/* Left — Details */}
+          <div className="lg:col-span-5 flex flex-col h-full bg-gradient-to-br from-[#0a0d1a]/70 via-[#060914]/60 to-[#0e0b18]/70 backdrop-blur-md border border-white/10 rounded-3xl p-4 sm:p-5 lg:p-6 overflow-hidden relative">
+            {/* Ambient glow */}
+            <div className="pointer-events-none absolute -top-16 -left-16 w-48 h-48 rounded-full bg-[#c9a84c]/10 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-10 -right-10 w-36 h-36 rounded-full bg-[#ffd700]/5 blur-2xl" />
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`info-${activeIdx}`}
+                initial="hidden"
+                animate="show"
+                exit="exit"
+                variants={{
+                  hidden: {},
+                  show: { transition: { staggerChildren: 0.07 } },
+                  exit: { transition: { staggerChildren: 0.04, staggerDirection: -1 } },
+                }}
+                className="flex-1 flex flex-col justify-between h-full relative z-10"
+              >
+                <div>
+                  {/* Badges */}
+                  <motion.div
+                    variants={{ hidden: { opacity: 0, y: -12 }, show: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -8 } }}
+                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex items-center gap-2 mb-2"
+                  >
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] uppercase tracking-widest font-bold bg-[#c9a84c]/15 border border-[#c9a84c]/35 text-[#c9a84c] shadow-[0_0_12px_rgba(201,168,76,0.15)]">
+                      <Building2 className="w-3 h-3" />
+                      {activeUnit.type}
                     </div>
-                    <ArrowRight className={`w-3.5 h-3.5 transition-all duration-300 ${i === activeIdx ? "text-[#c9a84c] translate-x-0.5" : "text-white/20 group-hover:text-white/40 group-hover:translate-x-0.5"}`} />
-                  </div>
-                  <div className={`text-base font-heading font-bold ${i === activeIdx ? "text-white" : "text-white/70 group-hover:text-white/90"}`}>{(u as Unit).label}</div>
-                  <div className="flex items-center gap-3 mt-1.5 text-xs text-white/45">
-                    <span>{(u as Unit).sqft} sq.ft.</span>
-                    {(u as Unit).beds > 0 && (
-                      <span className="flex items-center gap-1"><BedDouble className="w-3 h-3" />{(u as Unit).beds}</span>
+                    {activeUnit.highlight && (
+                      <span className="px-2.5 py-1 rounded-full text-[8px] uppercase tracking-widest font-bold bg-gradient-to-r from-[#ffd700]/20 to-[#c9a84c]/15 border border-[#ffd700]/40 text-[#ffd700] shadow-[0_0_10px_rgba(255,215,0,0.15)]">✦ Most Popular</span>
                     )}
-                    <span className="flex items-center gap-1"><Bath className="w-3 h-3" />{(u as Unit).baths}</span>
-                  </div>
-                  {i === activeIdx && (
-                    <motion.div layoutId="unit-active" className="absolute left-0 top-4 bottom-4 w-0.5 bg-gradient-to-b from-[#c9a84c] to-[#ffd700] rounded-full" />
-                  )}
-                </motion.button>
-              ))}
+                  </motion.div>
+
+                  {/* Title */}
+                  <motion.h3
+                    variants={{ hidden: { opacity: 0, x: -24 }, show: { opacity: 1, x: 0 }, exit: { opacity: 0, x: 16 } }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="text-3xl sm:text-4xl font-heading font-black text-white leading-none tracking-tight mb-0.5"
+                  >
+                    {activeUnit.label}
+                  </motion.h3>
+
+                  {/* Price */}
+                  <motion.div
+                    variants={{ hidden: { opacity: 0, x: -20 }, show: { opacity: 1, x: 0 }, exit: { opacity: 0, x: 16 } }}
+                    transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                    className="text-xl sm:text-2xl font-heading font-black bg-gradient-to-r from-[#c9a84c] to-[#ffd700] bg-clip-text text-transparent mb-3"
+                  >
+                    {activeUnit.price}
+                  </motion.div>
+
+                  {/* Quick info grid */}
+                  <motion.div
+                    variants={{ hidden: { opacity: 0, scale: 0.96 }, show: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 0.97 } }}
+                    transition={{ duration: 0.45 }}
+                    className="grid grid-cols-2 gap-2 mb-3"
+                  >
+                    {[
+                      { icon: Maximize2, label: "Size", val: `${activeUnit.sqft} sq.ft.` },
+                      { icon: BedDouble, label: "Bedrooms", val: activeUnit.beds > 0 ? String(activeUnit.beds) : "Studio" },
+                      { icon: Bath, label: "Bathrooms", val: String(activeUnit.baths) },
+                      { icon: Building2, label: "Floors", val: activeUnit.floors.includes("L") ? activeUnit.floors : "Office" },
+                    ].map((s) => (
+                      <div key={s.label} className="group/stat flex items-center gap-2.5 p-2 rounded-xl bg-white/5 border border-white/10 hover:border-[#c9a84c]/40 hover:bg-[#c9a84c]/8 transition-all duration-300 cursor-default">
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#c9a84c]/10 group-hover/stat:bg-[#c9a84c]/20 group-hover/stat:scale-110 transition-all duration-300 shrink-0">
+                          <s.icon className="w-3.5 h-3.5 text-[#c9a84c]" />
+                        </div>
+                        <div>
+                          <div className="text-[8px] uppercase tracking-widest text-[#c9a84c]/70 font-semibold">{s.label}</div>
+                          <div className="text-[13px] font-bold text-white group-hover/stat:text-[#ffd700] transition-colors leading-tight">{s.val}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </motion.div>
+
+                  {/* Features — gold-only icon cards */}
+                  <motion.div
+                    variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -6 } }}
+                    transition={{ duration: 0.4 }}
+                    className="grid grid-cols-2 gap-1 sm:gap-1.5 mb-2"
+                  >
+                    {activeUnit.features.map((f, fi) => {
+                      const cfg = FEATURE_CONFIG[f] ?? defaultFeatureCfg;
+                      const Icon = cfg.icon;
+                      return (
+                        <motion.div
+                          key={f}
+                          initial={{ opacity: 0, scale: 0.88 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: fi * 0.06, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                          className="group/feat flex items-center gap-2 px-2.5 py-2 rounded-xl border bg-[#c9a84c]/6 border-[#c9a84c]/20 hover:border-[#c9a84c]/45 hover:bg-[#c9a84c]/12 transition-all duration-300 cursor-default"
+                        >
+                          <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 bg-[#c9a84c]/10 group-hover/feat:bg-[#c9a84c]/20 group-hover/feat:scale-110 transition-all duration-300">
+                            <Icon className="w-3 h-3 text-[#c9a84c]" />
+                          </div>
+                          <span className="text-[10px] font-semibold leading-tight text-[#e8c97a] group-hover/feat:text-[#ffd700] transition-colors">{f}</span>
+                        </motion.div>
+                      );
+                    })}
+                  </motion.div>
+                </div>
+
+                {/* CTAs fixed at bottom */}
+                <motion.div
+                  variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 10 } }}
+                  transition={{ duration: 0.4 }}
+                  className="flex flex-col sm:flex-row gap-2 mt-auto pt-3 border-t border-white/10"
+                >
+                  <button className="btn-gold flex-1 rounded-lg py-2.5 flex justify-center items-center gap-1.5 font-bold text-xs hover:shadow-[0_0_24px_rgba(201,168,76,0.4)] transition-all duration-300" onClick={() => setModalUnit(activeUnit)}>
+                    <Eye className="w-3.5 h-3.5" />View Plan
+                  </button>
+                  <a
+                    href={`https://wa.me/60112880808?text=Hi%2C%20I'm%20interested%20in%20${encodeURIComponent(activeUnit.type)}%20at%20Pavilion%20Square`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-ghost-gold flex-1 rounded-lg py-2.5 flex justify-center items-center gap-1.5 font-bold text-xs"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />WhatsApp
+                  </a>
+                </motion.div>
+              </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Unit showcase */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`showcase-${tab}-${activeIdx}`}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -30 }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:col-span-3 flex flex-col gap-4"
-            >
-              {/* Image card */}
-              <div className="relative aspect-[3/2] sm:aspect-[16/10] rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 group img-card-hover">
-                <Image src={activeUnit.image} alt={activeUnit.label} fill sizes="(max-width: 768px) 100vw, 60vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#060914]/80 via-[#060914]/20 to-transparent" />
+          {/* Right — Image */}
+          <div className="lg:col-span-7 h-full min-h-[220px] min-[480px]:min-h-[300px] sm:min-h-[350px]">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`img-${activeIdx}`}
+                initial={{ opacity: 0, clipPath: "inset(0 100% 0 0 round 24px)" }}
+                animate={{ opacity: 1, clipPath: "inset(0 0% 0 0 round 24px)" }}
+                exit={{ opacity: 0, scale: 1.04, filter: "blur(6px)" }}
+                transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+                className="relative w-full h-full rounded-3xl overflow-hidden border border-white/10 group img-card-hover"
+              >
+                <Image
+                  src={activeUnit.image}
+                  alt={activeUnit.label}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 60vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
 
-                {/* Badges */}
-                <div className="absolute top-4 left-4 flex gap-2">
-                  <span className="section-badge text-[10px]">{activeUnit.type}</span>
-                  {activeUnit.highlight && <span className="section-badge text-[10px] bg-[#ffd700]/15 border-[#ffd700]/35 text-[#ffd700]">Most Popular</span>}
-                </div>
+                {/* Deep bottom gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#060914]/90 via-[#060914]/20 to-transparent" />
 
-                {/* Bottom info */}
-                <div className="absolute bottom-0 left-0 right-0 p-5">
-                  <div className="flex items-end justify-between">
-                    <div>
-                      <div className="text-2xl font-heading font-black text-white leading-tight">{activeUnit.label}</div>
-                      <div className="text-sm text-white/60 mt-0.5 font-light">{activeUnit.floors}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xl font-heading font-black stat-number">{activeUnit.sqft} <span className="text-base font-normal text-white/50">sq.ft.</span></div>
-                      <div className="text-sm text-[#c9a84c] font-semibold mt-0.5">{activeUnit.price}</div>
-                    </div>
+                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+                  <div className="text-5xl sm:text-7xl font-heading font-black leading-none mb-2 stat-number text-white tracking-tight">
+                    {activeUnit.sqft} <span className="text-2xl sm:text-3xl font-light text-white/50 tracking-normal">sq.ft.</span>
                   </div>
+                  <div className="text-[#c9a84c]/80 text-sm uppercase tracking-[0.2em] font-bold">{activeUnit.floors}</div>
                 </div>
 
-                {/* View button */}
+                {/* View button hover */}
                 <button
                   onClick={() => setModalUnit(activeUnit)}
-                  className="absolute top-4 right-4 flex items-center gap-2 px-3 py-2 rounded-xl bg-[#060914]/60 backdrop-blur-md border border-white/20 text-white/80 text-xs font-semibold hover:border-[#c9a84c]/50 hover:text-[#c9a84c] transition-all duration-300 lg:opacity-0 lg:group-hover:opacity-100"
+                  className="absolute top-4 right-4 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#060914]/60 backdrop-blur-md border border-white/20 text-white/90 text-xs font-bold hover:bg-[#c9a84c]/20 hover:border-[#c9a84c]/50 hover:text-[#c9a84c] transition-all duration-300 lg:opacity-0 lg:group-hover:opacity-100 shadow-lg"
                 >
-                  <Eye className="w-3.5 h-3.5" /> View Details
+                  <Eye className="w-4 h-4" /> Enlarge Floor Plan
                 </button>
-              </div>
 
-              {/* Quick info row */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {[
-                  { icon: Maximize2, label: "Size", val: `${activeUnit.sqft} sqft` },
-                  { icon: BedDouble, label: "Bedrooms", val: activeUnit.beds > 0 ? String(activeUnit.beds) : "—" },
-                  { icon: Bath, label: "Bathrooms", val: String(activeUnit.baths) },
-                  { icon: Building2, label: "Floors", val: activeUnit.floors.includes("L") ? activeUnit.floors : "Office" },
-                ].map((s) => (
-                  <div key={s.label} className="glow-card rounded-2xl p-3 flex flex-col items-center text-center gap-1">
-                    <s.icon className="w-4 h-4 text-[#c9a84c]" />
-                    <div className="text-sm font-bold text-white leading-tight">{s.val}</div>
-                    <div className="text-[9px] uppercase tracking-wider text-white/40">{s.label}</div>
+                {/* Progress bar — auto-advance indicator */}
+                {!paused && (
+                  <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/5 overflow-hidden">
+                    <motion.div
+                      key={`progress-${activeIdx}`}
+                      className="h-full bg-gradient-to-r from-[#c9a84c] to-[#ffd700]"
+                      initial={{ width: "0%" }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: 5.5, ease: "linear" }}
+                    />
                   </div>
-                ))}
-              </div>
-
-              {/* Features */}
-              <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                {activeUnit.features.map((f) => (
-                  <span key={f} className="feature-tag">{f}</span>
-                ))}
-              </div>
-
-              {/* CTAs */}
-              <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
-                <button className="btn-gold flex-1 rounded-xl py-3 sm:py-3.5" onClick={() => setModalUnit(activeUnit)}>
-                  <Eye className="w-4 h-4" />View Floor Plan
-                </button>
-                <a
-                  href={`https://wa.me/60112880808?text=I'm%20interested%20in%20${encodeURIComponent(activeUnit.type)}%20at%20Pavilion%20Square`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-ghost-gold flex-1 rounded-xl py-3 sm:py-3.5"
-                >
-                  <MessageSquare className="w-4 h-4" />WhatsApp
-                </a>
-              </div>
-            </motion.div>
-          </AnimatePresence>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
 
-        {/* Pagination dots */}
-        <div className="flex justify-center gap-1.5 mt-8">
-          {units.map((_, i) => (
-            <button key={i} onClick={() => select(i)} className={`slider-dot ${i === activeIdx ? "active" : "w-1.5 h-1.5"}`} />
-          ))}
-        </div>
+        {/* Pagination dots (removed as we now use pills above) */}
       </div>
 
       {/* Bottom line */}

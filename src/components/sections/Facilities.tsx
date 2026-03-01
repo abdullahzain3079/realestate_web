@@ -1,11 +1,10 @@
 "use client";
 
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import {
-  Waves, Dumbbell, TreePine, Gamepad2, Wind, Sun, Coffee,
-  ChevronLeft, ChevronRight, CheckCircle, Flame, Star, Users
+  Waves, Dumbbell, TreePine, CheckCircle, Flame, Star
 } from "lucide-react";
 
 /* ── Levels data ─────────────────────────────────────── */
@@ -72,17 +71,6 @@ const levels = [
   },
 ];
 
-/* ── Strip images ────────────────────────────────────── */
-const stripImages = [
-  "/page_9_img_1.jpeg",
-  "/page_8_img_1.jpeg",
-  "/page_10_img_2.jpeg",
-  "/page_11_img_1.jpeg",
-  "/page_12_img_1.jpeg",
-  "/page_14_img_1.jpeg",
-  "/page_9_img_1.jpeg",
-  "/page_13_img_1.jpeg",
-];
 
 export default function Facilities() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -135,7 +123,7 @@ export default function Facilities() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-black text-white leading-tight"
+            className="text-2xl min-[480px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-black text-white leading-tight"
           >
             Sky-High <em style={{ fontStyle: "normal", WebkitTextFillColor: "transparent", background: "linear-gradient(135deg,#c9a84c,#ffd700)", WebkitBackgroundClip: "text", backgroundClip: "text" }}>Facilities</em>
             <br />Like No Other
@@ -165,10 +153,10 @@ export default function Facilities() {
         </div>
 
         {/* Main content area */}
-        <div className="flex-1 grid lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 items-start">
+        <div className="flex-1 grid lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 items-stretch">
 
-          {/* Left — details */}
-          <div className="lg:col-span-3">
+          {/* Left — details only */}
+          <div className="lg:col-span-3 flex flex-col h-full">
             <AnimatePresence mode="wait">
               <motion.div
                 key={active.id}
@@ -176,112 +164,153 @@ export default function Facilities() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 40 }}
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className="flex-1 flex flex-col justify-center"
               >
                 {/* Level badge */}
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4 text-[11px] uppercase tracking-widest font-bold"
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 w-fit text-[11px] uppercase tracking-widest font-bold"
                   style={{ background: `${active.accent}18`, border: `1px solid ${active.accent}35`, color: active.accent }}>
                   <active.icon className="w-3.5 h-3.5" />
                   {active.level}
                 </div>
 
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-heading font-black text-white mb-2">
+                <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-black text-white mb-4 leading-tight">
                   {active.headline}
                 </h3>
-                <div className="text-[#c9a84c]/80 text-sm mb-4 font-medium">{active.tagline}</div>
-                <p className="text-white/65 leading-relaxed mb-4 sm:mb-6 text-sm sm:text-[15px]">{active.description}</p>
-
-                {/* Features grid */}
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-2.5 mb-4 sm:mb-6">
-                  {active.features.map((f) => (
-                    <motion.div
-                      key={f}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.4 }}
-                      className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-[#c9a84c]/30 hover:bg-[#c9a84c]/8 transition-all duration-300 group"
-                    >
-                      <CheckCircle className="w-3.5 h-3.5 text-[#c9a84c] flex-shrink-0" />
-                      <span className="text-xs text-white/75 group-hover:text-white/95 transition-colors font-medium">{f}</span>
-                    </motion.div>
-                  ))}
+                <div className="text-[#c9a84c]/90 text-base sm:text-lg mb-6 font-medium bg-gradient-to-r from-[#c9a84c]/20 to-transparent p-4 rounded-xl border-l-4 border-[#c9a84c]">
+                  {active.tagline}
                 </div>
-
-                {/* Big stat */}
-                <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#c9a84c]/12 to-transparent border border-[#c9a84c]/20">
-                  <div>
-                    <div className="text-2xl sm:text-4xl font-heading font-black stat-number leading-none">{active.stat}</div>
-                    <div className="text-xs uppercase tracking-widest text-white/45 mt-1">{active.statLabel}</div>
-                  </div>
-                  <div className="ml-auto">
-                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: `${active.accent}15`, border: `1px solid ${active.accent}30` }}>
-                      <active.icon className="w-7 h-7" style={{ color: active.accent }} />
-                    </div>
-                  </div>
-                </div>
+                <p className="text-white/70 leading-relaxed text-sm sm:text-base lg:text-lg xl:text-xl max-w-2xl font-light">
+                  {active.description}
+                </p>
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Right — image + level nav */}
-          <div className="lg:col-span-2 flex flex-col gap-2 sm:gap-4 order-first lg:order-last">
-            {/* Main image */}
+          {/* Right — image and features */}
+          <div className="lg:col-span-2 flex flex-col gap-4 sm:gap-6 h-full w-full">
             <AnimatePresence mode="wait">
               <motion.div
                 key={`img-${active.id}`}
-                initial={{ opacity: 0, scale: 0.97 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 1.03 }}
-                transition={{ duration: 0.7 }}
-                className="relative aspect-[16/10] sm:aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 img-card-hover"
+                initial={{ opacity: 0, x: 40, scale: 0.97 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: -40, scale: 1.03 }}
+                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 img-card-hover min-h-[280px] sm:min-h-[360px] lg:min-h-[420px]"
               >
-                <Image src={active.image} alt={active.headline} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#060914]/70 via-transparent to-transparent" />
-                <div
-                  className="absolute top-4 left-4 text-xs uppercase tracking-widest font-bold px-3 py-1.5 rounded-full"
-                  style={{ background: `${active.accent}25`, border: `1px solid ${active.accent}40`, color: active.accent }}
+                {/* Main image */}
+                <Image
+                  src={active.image}
+                  alt={active.headline}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 45vw"
+                  className="object-cover"
+                />
+
+                {/* Deep bottom gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#060914]/90 via-[#060914]/20 to-transparent" />
+
+                {/* Accent glow overlay */}
+                <motion.div
+                  className="absolute inset-0"
+                  animate={{ opacity: [0.4, 0.7, 0.4] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  style={{ background: `radial-gradient(ellipse at 75% 15%, ${active.accent}22 0%, transparent 65%)` }}
+                />
+
+                {/* Top-left level badge */}
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="absolute top-5 left-5 flex items-center gap-2 text-xs uppercase tracking-widest font-bold px-3 py-1.5 rounded-full backdrop-blur-md"
+                  style={{ background: `${active.accent}28`, border: `1px solid ${active.accent}50`, color: active.accent }}
                 >
+                  <active.icon className="w-3.5 h-3.5" />
                   {active.level}
+                </motion.div>
+
+                {/* Top-right corner accent */}
+                <div
+                  className="absolute top-0 right-0 w-24 h-24 pointer-events-none rounded-tr-2xl sm:rounded-tr-3xl"
+                  style={{ background: `linear-gradient(225deg, ${active.accent}25 0%, transparent 65%)` }}
+                />
+
+                {/* Bottom content */}
+                <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 bg-gradient-to-t from-[#060914] via-[#060914]/80 to-transparent">
+                  {/* Thin accent rule */}
+                  <motion.div
+                    key={`rule-${active.id}`}
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                    style={{ transformOrigin: "left center", background: `linear-gradient(90deg, ${active.accent}, transparent)` }}
+                    className="h-[2px] w-full mb-4"
+                  />
+
+                  <div className="flex flex-col gap-4">
+                    {/* Stat row */}
+                    <div className="flex justify-between items-end">
+                      <div>
+                        <div className="text-white/50 text-[11px] uppercase tracking-[0.2em] mb-1 font-bold">{active.statLabel}</div>
+                        <div className="text-4xl sm:text-5xl font-heading font-black leading-none stat-number tracking-tight" style={{ color: active.accent }}>
+                          {active.stat}
+                        </div>
+                      </div>
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-lg" style={{ background: `${active.accent}15`, border: `1px solid ${active.accent}40` }}>
+                        <active.icon className="w-6 h-6" style={{ color: active.accent }} />
+                      </div>
+                    </div>
+
+                    {/* Features grid */}
+                    <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-2 mt-2">
+                      {active.features.map((f, i) => (
+                        <motion.div
+                          key={`${active.id}-feature-${i}`}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.4, delay: 0.2 + (i * 0.05) }}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-black/40 backdrop-blur-md border border-white/5 hover:border-white/15 transition-colors group"
+                        >
+                          <CheckCircle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: active.accent }} />
+                          <span className="text-[11px] sm:text-xs text-white/80 group-hover:text-white transition-colors font-medium leading-tight truncate">{f}</span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
+
+                {/* Animated glowing border */}
+                <motion.div
+                  className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
+                  animate={{
+                    boxShadow: [
+                      `inset 0 0 0 1px ${active.accent}18, 0 8px 50px ${active.accent}10`,
+                      `inset 0 0 0 1px ${active.accent}40, 0 8px 70px ${active.accent}22`,
+                      `inset 0 0 0 1px ${active.accent}18, 0 8px 50px ${active.accent}10`,
+                    ],
+                  }}
+                  transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                />
+
+                {/* Progress bar — auto-advance indicator */}
+                {!paused && (
+                  <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/5 rounded-b-3xl overflow-hidden">
+                    <motion.div
+                      key={`progress-${active.id}`}
+                      className="h-full"
+                      style={{ background: `linear-gradient(90deg, ${active.accent}, #fff8)` }}
+                      initial={{ width: "0%" }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: 6, ease: "linear" }}
+                    />
+                  </div>
+                )}
               </motion.div>
             </AnimatePresence>
-
-            {/* Level cards grid */}
-            <div className="grid grid-cols-2 gap-2">
-              {levels.map((l, i) => (
-                <button
-                  key={l.id}
-                  onClick={() => selectLevel(i)}
-                  className={`relative overflow-hidden rounded-xl sm:rounded-2xl p-2 sm:p-3.5 text-left transition-all duration-400 border ${i === activeIdx
-                    ? "border-[#c9a84c]/45 bg-gradient-to-br from-[#c9a84c]/15 to-[#c9a84c]/5 shadow-[0_0_20px_rgba(201,168,76,0.1)]"
-                    : "border-white/8 bg-white/5 hover:border-white/20 hover:bg-white/8"}`}
-                >
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <l.icon className={`w-4 h-4 ${i === activeIdx ? "text-[#c9a84c]" : "text-white/40"}`} />
-                    <span className={`text-[10px] uppercase tracking-wider font-bold ${i === activeIdx ? "text-[#c9a84c]" : "text-white/40"}`}>{l.id}</span>
-                  </div>
-                  <div className={`text-xs font-semibold leading-tight ${i === activeIdx ? "text-white" : "text-white/55"}`}>
-                    {l.headline.split(" ").slice(0, 3).join(" ")}
-                  </div>
-                  {/* Active indicator */}
-                  {i === activeIdx && (
-                    <motion.div layoutId="level-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#c9a84c] to-[#ffd700]" />
-                  )}
-                </button>
-              ))}
-            </div>
           </div>
         </div>
 
-        {/* Image strip */}
-        <div className="mt-10 overflow-hidden">
-          <div className="flex gap-3" style={{ animation: "marquee 35s linear infinite", width: "max-content", willChange: "transform" }}>
-            {[...stripImages, ...stripImages].map((src, i) => (
-              <div key={i} className="relative w-20 h-14 sm:w-32 sm:h-20 rounded-lg sm:rounded-xl overflow-hidden flex-shrink-0 border border-white/10 img-card-hover">
-                <Image src={src} alt="" fill sizes="(max-width: 768px) 80px, 128px" className="object-cover" />
-              </div>
-            ))}
-          </div>
-        </div>
+
       </div>
 
       {/* Bottom gold line */}

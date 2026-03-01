@@ -3,10 +3,11 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   Phone, Mail, MapPin, Clock, Facebook, Instagram, Globe,
   ExternalLink, CheckCircle, ChevronLeft, ChevronRight,
-  MessageSquare, Send, AlertCircle,
+  MessageSquare, Send, AlertCircle, User, AtSign, Smartphone,
 } from "lucide-react";
 
 /* ── Gallery images ──────────────────────────────────── */
@@ -27,50 +28,7 @@ const gallery = [
   "/page_4_img_2.jpeg",
 ];
 
-/* ── Form options ────────────────────────────────────── */
-const unitTypes = [
-  "Studio (Type A1/A2)",
-  "1-Bedroom (Type B1/B2)",
-  "2-Bedroom (Type C1/C2)",
-  "3-Bedroom Penthouse",
-  "Corner Suite (Type D)",
-  "Corporate Suite (Type CS1)",
-  "Corporate Loft (Type CS2)",
-  "Business Suite (Type BS)",
-];
-
-const budgetRanges = [
-  "RM 800,000 – RM 1.2M",
-  "RM 1.2M – RM 1.8M",
-  "RM 1.8M – RM 2.5M",
-  "RM 2.5M – RM 3M",
-  "Above RM 3M",
-];
-
-const hearAboutUs = [
-  "iProperty.com.my",
-  "PropertyGuru",
-  "Mudah.my",
-  "Facebook / Instagram",
-  "Friend / Referral",
-  "Sales Gallery Visit",
-  "Newspaper / Magazine",
-  "Other",
-];
-
-const nationalities = [
-  "Malaysian",
-  "Singaporean",
-  "Chinese",
-  "Taiwanese",
-  "Hong Kong",
-  "Indonesian",
-  "Japanese",
-  "Korean",
-  "British",
-  "Australian",
-  "Other",
-];
+/* ── Form options & unused constants removed ── */
 
 /* ── Contact details ─────────────────────────────────── */
 const contactInfo = [
@@ -97,16 +55,30 @@ const quickLinks = [
 ];
 
 /* ── Form field helper ───────────────────────────────── */
-function InputField({ label, required, error, children }: { label: string; required?: boolean; error?: string; children: React.ReactNode }) {
+function InputField({ label, required, error, step, icon: Icon, children }: { label: string; required?: boolean; error?: string; step?: number; icon?: React.ElementType; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <label className="text-[12px] font-semibold text-white/55 uppercase tracking-[0.15em]">
-        {label} {required && <span className="text-[#c9a84c]">*</span>}
-      </label>
-      {children}
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        {step && (
+          <span className="w-5 h-5 rounded-full bg-gradient-to-br from-[#c9a84c]/30 to-[#ffd700]/10 border border-[#c9a84c]/40 flex items-center justify-center text-[10px] font-bold text-[#c9a84c] flex-shrink-0">
+            {step}
+          </span>
+        )}
+        <label className="text-[13px] font-bold text-white/70 uppercase tracking-[0.15em]">
+          {label} {required && <span className="text-[#c9a84c]">*</span>}
+        </label>
+      </div>
+      <div className="relative">
+        {Icon && (
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10">
+            <Icon className="w-4 h-4 text-[#c9a84c]/50" />
+          </div>
+        )}
+        {children}
+      </div>
       {error && (
-        <div className="flex items-center gap-1.5 text-red-400 text-[11px]">
-          <AlertCircle className="w-3 h-3" />
+        <div className="flex items-center gap-1.5 text-red-400 text-[12px] mt-1">
+          <AlertCircle className="w-3.5 h-3.5" />
           {error}
         </div>
       )}
@@ -115,9 +87,10 @@ function InputField({ label, required, error, children }: { label: string; requi
 }
 
 const inputCls =
-  "w-full bg-[#1a1620]/70 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-[#c9a84c]/60 focus:bg-[#1a1620] focus:shadow-[0_0_0_3px_rgba(201,168,76,0.12)] transition-all duration-200";
+  "w-full bg-[#060914]/60 border border-white/10 rounded-xl px-5 py-4 text-[15px] text-white placeholder-white/20 focus:outline-none focus:border-[#c9a84c]/60 focus:ring-1 focus:ring-[#c9a84c]/30 focus:bg-[#060914]/80 shadow-inner transition-all duration-300 backdrop-blur-md";
 
-const selectCls = inputCls + " appearance-none cursor-pointer";
+const inputWithIconCls =
+  "w-full bg-[#060914]/60 border border-white/10 rounded-xl pl-11 pr-5 py-4 text-[15px] text-white placeholder-white/20 focus:outline-none focus:border-[#c9a84c]/60 focus:ring-1 focus:ring-[#c9a84c]/30 focus:bg-[#060914]/80 shadow-inner transition-all duration-300 backdrop-blur-md";
 
 /* ── Component ───────────────────────────────────────── */
 export default function Contact() {
@@ -132,7 +105,7 @@ export default function Contact() {
   const galNext = () => { galPaused.current = true; setGalIdx((i) => (i + 1) % gallery.length); setTimeout(() => { galPaused.current = false; }, 7000); };
 
   /* Form state */
-  const [form, setForm] = useState({ salutation: "Mr", name: "", nric: "", nationality: "Malaysian", email: "", phone: "", propertyType: "Residential", unitType: "", budget: "", hearAbout: "", message: "", pdpa: false });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", message: "", pdpa: false });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -144,7 +117,6 @@ export default function Contact() {
     if (!form.name.trim()) e.name = "Full name is required";
     if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) e.email = "Valid email required";
     if (!form.phone.match(/^(\+?6?0)[0-9]{8,10}$/)) e.phone = "Valid Malaysian phone required";
-    if (!form.unitType) e.unitType = "Please select a unit type";
     if (!form.pdpa) e.pdpa = "PDPA consent is required";
     return e;
   };
@@ -160,72 +132,159 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="relative overflow-hidden bg-[#060914]">
+    <section id="contact" className="relative overflow-hidden bg-[#060914] pt-8">
 
-      {/* ── GALLERY HERO ──────────────────────────────── */}
-      <div className="relative h-[60vh] sm:h-[70vh] overflow-hidden">
-        {gallery.map((src, i) => (
-          <motion.div key={i} className="absolute inset-0" animate={{ opacity: i === galIdx ? 1 : 0 }} transition={{ duration: 1.4 }}>
-            <Image src={src} alt="Pavilion Square" fill sizes="100vw" priority={i === 0} className="object-cover kb-zoom-bg" style={{ filter: "brightness(0.45)" }} />
-          </motion.div>
-        ))}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#060914]/60 via-transparent to-[#060914]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#060914]/80 to-transparent" />
+      {/* ── BACKGROUND SLIDER ───────────────────────── */}
+      {gallery.map((src, i) => (
+        <motion.div
+          key={i}
+          className="absolute inset-0 z-0"
+          animate={{ opacity: i === galIdx ? 1 : 0 }}
+          transition={{ duration: 2, ease: "easeInOut" }}
+        >
+          <Image
+            src={src}
+            alt="Pavilion Square"
+            fill
+            sizes="100vw"
+            priority={i === 0}
+            className="object-cover kb-zoom-bg"
+            style={{ filter: "brightness(0.3) saturate(1.2)" }}
+          />
+        </motion.div>
+      ))}
 
-        {/* Gallery controls */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-5 z-10">
-          <button onClick={galPrev} className="slider-arrow"><ChevronLeft className="w-4 h-4" /></button>
-          <button onClick={galNext} className="slider-arrow"><ChevronRight className="w-4 h-4" /></button>
-        </div>
-        <div className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 overflow-x-auto max-w-[90vw] scrollbar-hide px-2 gap-1.5">
-          {gallery.map((_, i) => <button key={i} onClick={() => { galPaused.current = true; setGalIdx(i); setTimeout(() => { galPaused.current = false; }, 7000); }} className={`slider-dot ${i === galIdx ? "active" : ""}`} />)}
-        </div>
-
-        {/* Headline */}
-        <div className="absolute bottom-12 left-0 right-0 px-6 max-w-7xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: -15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="section-badge mb-4">
-            <Mail className="w-3 h-3" />Get In Touch
-          </motion.div>
-          <motion.h2 initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="text-2xl sm:text-3xl md:text-4xl font-heading font-black text-white leading-tight mb-4">
-            Register Your <em style={{ fontStyle: "normal", WebkitTextFillColor: "transparent", background: "linear-gradient(135deg,#c9a84c,#ffd700)", WebkitBackgroundClip: "text", backgroundClip: "text" }}>Interest</em>
-          </motion.h2>
-        </div>
-      </div>
+      {/* Dynamic Overlays for Readability */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-r from-[#060914]/95 via-[#060914]/80 to-[#060914]/30" />
+      <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#060914] via-transparent to-[#060914]/60" />
 
       {/* ── CONTENT ───────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-28">
-        <div className="grid lg:grid-cols-5 gap-8 lg:gap-16 items-start">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
 
-          {/* Left — contact info */}
+        {/* ── FULL-WIDTH HEADING AREA ── */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="mb-10"
+        >
+          {/* Title & Subtitle */}
+          <div className="max-w-2xl">
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="section-badge mb-3"
+            >
+              <Mail className="w-3 h-3" />
+              Get In Touch
+            </motion.div>
+
+            <h2 className="text-3xl min-[480px]:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-heading font-black text-white leading-[1.05] mb-3 text-shadow-luxury">
+              Register Your{" "}
+              <em className="not-italic text-transparent bg-clip-text bg-gradient-to-br from-[#c9a84c] via-[#ffd700] to-[#e8c050] drop-shadow-[0_0_30px_rgba(201,168,76,0.4)]">
+                Interest
+              </em>
+            </h2>
+
+            <div className="section-divider mb-3" />
+
+            <p className="text-white/75 text-[15px] sm:text-base leading-relaxed">
+              Speak with our dedicated sales consultants to schedule a private viewing at our gallery in the heart of KL City Centre.
+            </p>
+          </div>
+
+          {/* Gallery controls top, Stat boxes bottom */}
+          <div className="flex flex-col items-start gap-6 mt-6">
+            {/* Gallery slider controls FIRST */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={galPrev}
+                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-[#c9a84c]/20 hover:border-[#c9a84c]/50 transition-all"
+                aria-label="Previous Slide"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <div className="flex gap-1.5 px-2">
+                {gallery.slice(0, 8).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => { galPaused.current = true; setGalIdx(i); setTimeout(() => { galPaused.current = false; }, 7000); }}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${i === galIdx ? "w-6 bg-gradient-to-r from-[#c9a84c] to-[#ffd700]" : "w-1.5 bg-white/30 hover:bg-white/50"}`}
+                    aria-label={`Slide ${i + 1}`}
+                  />
+                ))}
+              </div>
+              <button
+                onClick={galNext}
+                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-[#c9a84c]/20 hover:border-[#c9a84c]/50 transition-all"
+                aria-label="Next Slide"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Stat Boxes SECOND (below) */}
+            <div className="flex gap-3">
+              {[
+                { num: "62", label: "Floors" },
+                { num: "5★", label: "Luxury" },
+                { num: "KLCC", label: "Location" },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className="flex flex-col items-center justify-center w-[80px] h-[64px] min-[480px]:w-[100px] min-[480px]:h-[80px] rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-sm hover:border-[#c9a84c]/40 transition-all duration-300 group"
+                >
+                  <span className="stat-number text-xl font-heading font-black group-hover:scale-110 transition-transform duration-300">
+                    {stat.num}
+                  </span>
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-semibold mt-1">
+                    {stat.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Mobile slider controls */}
+        <div className="flex lg:hidden items-center gap-2 mb-6">
+          <button onClick={galPrev} className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-[#c9a84c]/20 hover:border-[#c9a84c]/50 transition-all" aria-label="Previous Slide"><ChevronLeft className="w-4 h-4" /></button>
+          <div className="flex gap-1.5 px-2">
+            {gallery.slice(0, 8).map((_, i) => (
+              <button key={i} onClick={() => { galPaused.current = true; setGalIdx(i); setTimeout(() => { galPaused.current = false; }, 7000); }} className={`h-1.5 rounded-full transition-all duration-300 ${i === galIdx ? "w-6 bg-gradient-to-r from-[#c9a84c] to-[#ffd700]" : "w-1.5 bg-white/30 hover:bg-white/50"}`} aria-label={`Slide ${i + 1}`} />
+            ))}
+          </div>
+          <button onClick={galNext} className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-[#c9a84c]/20 hover:border-[#c9a84c]/50 transition-all" aria-label="Next Slide"><ChevronRight className="w-4 h-4" /></button>
+        </div>
+
+        {/* ── TWO-COLUMN: CONTACT BOXES + FORM ── */}
+        <div className="grid lg:grid-cols-5 gap-6 lg:gap-10 items-start">
+
+          {/* Left — Contact Info */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="lg:col-span-2 flex flex-col gap-6"
+            className="lg:col-span-2 flex flex-col gap-4"
           >
-            <div>
-              <div className="section-divider mb-5" />
-              <p className="text-white/55 text-sm sm:text-[15px] leading-relaxed mb-6 sm:mb-8">
-                Speak with our dedicated sales consultants to schedule a private viewing at our gallery in the heart of KL City Centre.
-              </p>
-            </div>
-
             {/* Contact items */}
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-4">
               {contactInfo.map((c) => (
-                <div key={c.label} className="group glow-card glow-card-slow rounded-2xl p-4 flex items-start gap-4">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#c9a84c]/15 to-transparent border border-[#c9a84c]/20 flex items-center justify-center flex-shrink-0">
-                    <c.icon className="w-4 h-4 sm:w-5 sm:h-5 text-[#c9a84c]" />
+                <div key={c.label} className="group glow-card glow-card-slow bg-white/5 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-4 hover:bg-white/10 transition-all duration-300 min-h-[76px]">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#c9a84c]/15 to-transparent border border-[#c9a84c]/20 flex items-center justify-center flex-shrink-0">
+                    <c.icon className="w-5 h-5 text-[#c9a84c]" />
                   </div>
-                  <div>
-                    <div className="text-xs sm:text-sm font-bold text-white group-hover:text-[#c9a84c] transition-colors">{c.label}</div>
+                  <div className="min-w-0 flex-1 py-1">
+                    <div className="text-base font-bold text-white group-hover:text-[#c9a84c] transition-colors">{c.label}</div>
                     {c.href ? (
-                      <a href={c.href} target={c.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="text-[11px] sm:text-xs text-white/50 hover:text-[#ffd700] transition-colors duration-200">
+                      <a href={c.href} target={c.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="text-sm sm:text-[15px] text-white/50 hover:text-[#ffd700] transition-colors duration-200 block break-words leading-tight mt-0.5">
                         {c.value}
                       </a>
                     ) : (
-                      <div className="text-[11px] sm:text-xs text-white/50">{c.value}</div>
+                      <div className="text-sm sm:text-[15px] text-white/50 break-words leading-tight mt-0.5">{c.value}</div>
                     )}
                   </div>
                 </div>
@@ -233,29 +292,29 @@ export default function Contact() {
             </div>
 
             {/* Socials */}
-            <div>
-              <div className="text-[10px] uppercase tracking-[0.3em] text-white/25 mb-3 font-semibold">Follow Us</div>
-              <div className="flex gap-2 sm:gap-3">
+            <div className="mt-2 pl-0 min-[480px]:pl-[80px] flex flex-col items-center w-fit">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-px bg-gradient-to-r from-transparent to-[#c9a84c]/50" />
+                <div className="text-[10px] uppercase tracking-[0.3em] text-[#c9a84c] font-bold">Connect With Us</div>
+                <div className="w-8 h-px bg-gradient-to-l from-transparent to-[#c9a84c]/50" />
+              </div>
+              <div className="flex gap-4">
                 {socials.map((s) => (
                   <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
-                    className="group w-10 h-10 rounded-xl bg-[#1a1620] border border-white/10 flex items-center justify-center hover:border-[#c9a84c]/50 hover:shadow-[0_0_14px_rgba(201,168,76,0.18)] transition-all duration-300"
+                    className="relative group w-12 h-12 flex items-center justify-center rounded-2xl bg-[#0a0f1d] border border-white/5 overflow-hidden transition-all duration-500 hover:scale-110 hover:-translate-y-1 hover:shadow-[0_10px_30px_-10px_rgba(201,168,76,0.5)] hover:border-[#c9a84c]/50"
                   >
-                    <s.icon className="w-4 h-4 text-white/40 group-hover:text-[#c9a84c] transition-colors duration-300" />
+                    {/* Hover internal glow */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#c9a84c]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                    {/* Icon */}
+                    <s.icon className="relative z-10 w-5 h-5 text-white/40 group-hover:text-[#ffd700] transition-colors duration-500" />
+
+                    {/* Bottom reflection line */}
+                    <div className="absolute bottom-0 left-1/4 right-1/4 h-[2px] bg-gradient-to-r from-transparent via-[#ffd700]/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </a>
                 ))}
-                <a href="https://www.pavillionsquare.com.my" target="_blank" rel="noopener noreferrer"
-                  className="group flex items-center gap-2 px-4 h-10 rounded-xl bg-[#1a1620] border border-white/10 text-[12px] text-white/40 hover:text-[#c9a84c] hover:border-[#c9a84c]/50 transition-all duration-300">
-                  <ExternalLink className="w-3.5 h-3.5" />Official Site
-                </a>
               </div>
             </div>
-
-            {/* WhatsApp button */}
-            <a href="https://wa.link/kgsiw7" target="_blank" rel="noopener noreferrer"
-              className="btn-gold rounded-xl py-4 justify-center"
-            >
-              <MessageSquare className="w-4 h-4" />Chat on WhatsApp
-            </a>
           </motion.div>
 
           {/* Right — form */}
@@ -264,7 +323,7 @@ export default function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="lg:col-span-3"
+            className="lg:col-span-3 lg:pl-4 xl:pl-8 h-full flex flex-col justify-start"
           >
             <AnimatePresence mode="wait">
               {submitted ? (
@@ -272,133 +331,131 @@ export default function Contact() {
                   key="success"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="glow-card rounded-3xl p-12 flex flex-col items-center text-center gap-6"
+                  className="bg-[#060914]/40 backdrop-blur-2xl border border-[#c9a84c]/40 rounded-3xl p-12 flex flex-col items-center text-center gap-6 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)]"
                 >
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#c9a84c]/20 to-[#ffd700]/10 border border-[#c9a84c]/35 flex items-center justify-center">
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#c9a84c]/20 to-[#ffd700]/10 border border-[#c9a84c]/50 flex items-center justify-center shadow-[0_0_40px_rgba(201,168,76,0.3)]">
                     <CheckCircle className="w-10 h-10 text-[#c9a84c]" />
                   </div>
                   <div>
                     <div className="text-2xl font-heading font-bold text-white mb-2">Thank You!</div>
-                    <div className="text-white/55 text-[14px] leading-relaxed max-w-sm">
+                    <div className="text-white/70 text-[14px] leading-relaxed max-w-sm">
                       Your enquiry has been received. Our sales team will contact you within 24 hours via your preferred channel.
                     </div>
                   </div>
                   <a href="https://wa.link/kgsiw7" target="_blank" rel="noopener noreferrer" className="btn-gold rounded-xl px-8 py-3">
                     <MessageSquare className="w-4 h-4" />Also Reach Us on WhatsApp
                   </a>
-                  <button onClick={() => setSubmitted(false)} className="text-[12px] text-white/30 hover:text-white/60 transition-colors">Submit another enquiry</button>
+                  <button onClick={() => setSubmitted(false)} className="text-[12px] font-bold text-white/40 hover:text-white transition-colors">Submit another enquiry</button>
                 </motion.div>
               ) : (
                 <motion.form
                   key="form"
                   onSubmit={handleSubmit}
-                  className="glow-card rounded-3xl p-7 md:p-9 flex flex-col gap-5"
+                  className="bg-[#060914]/40 backdrop-blur-3xl border border-[#c9a84c]/40 rounded-3xl p-5 min-[480px]:p-8 sm:p-10 flex flex-col gap-5 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] relative"
                   noValidate
                 >
-                  <div className="text-[10px] uppercase tracking-[0.3em] text-[#c9a84c]/70 font-semibold mb-1">Registration Form</div>
+                  {/* Gold accent bar at top */}
+                  <div className="absolute top-0 left-8 right-8 h-[2px] bg-gradient-to-r from-transparent via-[#ffd700] to-transparent rounded-full" />
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                    <InputField label="Salutation">
-                      <select value={form.salutation} onChange={(e) => set("salutation", e.target.value)} className={selectCls}>
-                        {["Mr", "Ms", "Mrs", "Dr", "Dato", "Tan Sri"].map((s) => <option key={s} value={s}>{s}</option>)}
-                      </select>
-                    </InputField>
-                    <InputField label="Full Name" required error={errors.name}>
-                      <input value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="As per NRIC / Passport" className={inputCls + " sm:col-span-2"} />
-                    </InputField>
-                  </div>
+                  {/* Corner glow — top right */}
+                  <div className="absolute -top-1 -right-1 w-32 h-32 bg-gradient-to-bl from-[#c9a84c]/15 to-transparent rounded-3xl pointer-events-none" />
 
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <InputField label="NRIC / Passport">
-                      <input value={form.nric} onChange={(e) => set("nric", e.target.value)} placeholder="e.g. 950101-07-1234" className={inputCls} />
-                    </InputField>
-                    <InputField label="Nationality">
-                      <select value={form.nationality} onChange={(e) => set("nationality", e.target.value)} className={selectCls}>
-                        {nationalities.map((n) => <option key={n} value={n}>{n}</option>)}
-                      </select>
-                    </InputField>
-                  </div>
+                  {/* Premium subtle glow overlay inside the form */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.03] to-transparent rounded-3xl pointer-events-none" />
 
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <InputField label="Email" required error={errors.email}>
-                      <input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="your@email.com" className={inputCls} />
-                    </InputField>
-                    <InputField label="Phone Number" required error={errors.phone}>
-                      <input value={form.phone} onChange={(e) => set("phone", e.target.value)} placeholder="+60 12-345 6789" className={inputCls} />
-                    </InputField>
-                  </div>
-
-                  <InputField label="Property Type Interest">
-                    <div className="flex gap-2">
-                      {["Residential", "Corporate", "Both"].map((t) => (
-                        <button key={t} type="button" onClick={() => set("propertyType", t)}
-                          className={`flex-1 py-2.5 rounded-xl text-[12px] font-semibold border transition-all duration-200 ${form.propertyType === t ? "bg-gradient-to-r from-[#c9a84c] to-[#b8963a] border-[#c9a84c] text-[#060914] shadow-[0_0_18px_rgba(201,168,76,0.3)]" : "bg-[#1a1620]/60 border-white/10 text-white/50 hover:border-[#c9a84c]/30 hover:text-white/70"}`}
-                        >{t}</button>
-                      ))}
+                  <div className="relative">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[9px] uppercase tracking-[0.3em] text-[#ffd700]/70 font-semibold px-2 py-0.5 rounded-full bg-[#c9a84c]/10 border border-[#c9a84c]/20">Exclusive Preview</span>
                     </div>
+                    <div className="text-[12px] uppercase tracking-[0.3em] text-[#c9a84c] font-bold mt-2">Priority Registration</div>
+                  </div>
+
+                  <InputField label="Full Name" required error={errors.name} step={1} icon={User}>
+                    <input
+                      value={form.name}
+                      onChange={(e) => set("name", e.target.value)}
+                      placeholder="Jane Doe"
+                      className={inputWithIconCls}
+                    />
                   </InputField>
 
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <InputField label="Unit Type" required error={errors.unitType}>
-                      <select value={form.unitType} onChange={(e) => set("unitType", e.target.value)} className={selectCls}>
-                        <option value="">Select unit type</option>
-                        {unitTypes.map((u) => <option key={u} value={u}>{u}</option>)}
-                      </select>
+                  <div className="grid sm:grid-cols-2 gap-5">
+                    <InputField label="Email Address" required error={errors.email} step={2} icon={AtSign}>
+                      <input
+                        type="email"
+                        value={form.email}
+                        onChange={(e) => set("email", e.target.value)}
+                        placeholder="jane@example.com"
+                        className={inputWithIconCls}
+                      />
                     </InputField>
-                    <InputField label="Budget Range">
-                      <select value={form.budget} onChange={(e) => set("budget", e.target.value)} className={selectCls}>
-                        <option value="">Select range</option>
-                        {budgetRanges.map((b) => <option key={b} value={b}>{b}</option>)}
-                      </select>
+                    <InputField label="Phone Number" required error={errors.phone} step={3} icon={Smartphone}>
+                      <input
+                        value={form.phone}
+                        onChange={(e) => set("phone", e.target.value)}
+                        placeholder="+60 12-345 6789"
+                        className={inputWithIconCls}
+                      />
                     </InputField>
                   </div>
 
-                  <InputField label="How Did You Hear About Us">
-                    <select value={form.hearAbout} onChange={(e) => set("hearAbout", e.target.value)} className={selectCls}>
-                      <option value="">Select source</option>
-                      {hearAboutUs.map((h) => <option key={h} value={h}>{h}</option>)}
-                    </select>
-                  </InputField>
-
-                  <InputField label="Message / Specific Requirements">
+                  <InputField label="Message (Optional)" step={4}>
                     <textarea
                       value={form.message}
                       onChange={(e) => set("message", e.target.value)}
                       rows={3}
-                      placeholder="Tell us your preferred floor, view, move-in date or any other requirements..."
+                      placeholder="Tell us what you're looking for..."
                       className={inputCls + " resize-none"}
                     />
                   </InputField>
 
                   {/* PDPA consent */}
-                  <div className="flex items-start gap-3 sm:gap-4 group">
+                  <div className="flex items-start gap-3 mt-1 mb-1">
                     <button
                       type="button"
                       onClick={() => set("pdpa", !form.pdpa)}
-                      className={`mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${form.pdpa ? "bg-gradient-to-br from-[#c9a84c] to-[#b8963a] border-[#c9a84c]" : "bg-transparent border-white/25 hover:border-[#c9a84c]/50"}`}
+                      className={`mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${form.pdpa ? "bg-gradient-to-br from-[#c9a84c] to-[#b8963a] border-[#c9a84c]" : "bg-[#060914]/60 border-white/20 hover:border-[#c9a84c]/50"}`}
                     >
-                      {form.pdpa && <CheckCircle className="w-3 h-3 text-[#060914]" />}
+                      {form.pdpa && <CheckCircle className="w-3.5 h-3.5 text-[#060914]" />}
                     </button>
-                    <p className="text-[11px] text-white/40 leading-relaxed">
-                      I consent to YNH Property Berhad collecting, using and disclosing my personal data in accordance with their <a href="https://www.pavillionsquare.com.my" target="_blank" rel="noopener noreferrer" className="text-[#c9a84c] hover:underline">Privacy Policy</a> and Malaysia&apos;s Personal Data Protection Act 2010 (PDPA). <span className="text-[#c9a84c]">*</span>
-                    </p>
+                    <div>
+                      <p className="text-[12px] text-white/50 leading-relaxed">
+                        I consent to YNH Property Berhad collecting, using and disclosing my personal data in accordance with their <a href="https://www.pavillionsquare.com.my" target="_blank" rel="noopener noreferrer" className="text-[#c9a84c] hover:underline hover:text-[#ffd700]">Privacy Policy</a> and Malaysia&apos;s Personal Data Protection Act 2010 (PDPA). <span className="text-[#c9a84c] font-bold">*</span>
+                      </p>
+                      {errors.pdpa && <div className="flex items-center gap-1.5 text-red-400 text-[12px] mt-1.5"><AlertCircle className="w-3.5 h-3.5" />{errors.pdpa}</div>}
+                    </div>
                   </div>
-                  {errors.pdpa && <div className="flex items-center gap-1.5 text-red-400 text-[11px] -mt-3"><AlertCircle className="w-3 h-3" />{errors.pdpa}</div>}
 
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="btn-gold w-full rounded-xl py-3 sm:py-4 text-center mt-1 disabled:opacity-60 disabled:cursor-not-allowed"
-                  >
-                    {submitting ? (
-                      <>
-                        <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeDasharray="60" strokeDashoffset="15" /></svg>
-                        Submitting…
-                      </>
-                    ) : (
-                      <><Send className="w-4 h-4" />Submit Enquiry</>
-                    )}
-                  </button>
+                  {/* Buttons — perfectly inline */}
+                  <div className="grid sm:grid-cols-2 gap-4 mt-1 items-stretch">
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="btn-gold w-full rounded-xl min-h-[56px] py-4 text-[14px] font-bold text-center disabled:opacity-60 disabled:cursor-not-allowed group relative overflow-hidden"
+                    >
+                      <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                      <span className="relative flex items-center justify-center gap-2 whitespace-nowrap">
+                        {submitting ? (
+                          <>
+                            <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeDasharray="60" strokeDashoffset="15" /></svg>
+                            Submitting…
+                          </>
+                        ) : (
+                          <><Send className="w-5 h-5" />Submit Enquiry</>
+                        )}
+                      </span>
+                    </button>
+
+                    <a
+                      href="https://wa.link/kgsiw7"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-ghost-gold w-full rounded-xl min-h-[56px] py-4 text-[14px] font-bold text-center flex items-center justify-center gap-2 group whitespace-nowrap hover:shadow-[0_0_24px_rgba(37,211,102,0.25)] hover:border-[#25d366]/60 transition-all duration-300"
+                    >
+                      <MessageSquare className="w-5 h-5 group-hover:animate-pulse group-hover:text-[#25d366] transition-colors duration-300" />
+                      <span className="group-hover:text-[#25d366] transition-colors duration-300">WhatsApp Pricing</span>
+                    </a>
+                  </div>
                 </motion.form>
               )}
             </AnimatePresence>
@@ -407,87 +464,199 @@ export default function Contact() {
       </div>
 
       {/* ── FOOTER ────────────────────────────────────── */}
-      <footer className="relative mt-20">
-        <div className="h-px bg-gradient-to-r from-transparent via-[#c9a84c]/40 to-transparent mb-0 relative z-10" />
-        <div className="relative bg-[#030611] overflow-hidden">
+      <footer className="relative mt-12 sm:mt-16 w-full">
+        {/* Animated Glow Border Wrapper - Oval Top Only */}
+        <div className="relative rounded-t-[24px] sm:rounded-t-[32px] lg:rounded-t-[40px] pt-[2px] overflow-hidden group shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+          {/* Animated conic gradients for the tracing border effect */}
+          <div className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] bg-[conic-gradient(from_0deg,transparent_0_300deg,#c9a84c_330deg,#ffd700_360deg)] opacity-70 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" style={{ animation: 'spin 6s linear infinite' }} />
+          <div className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] bg-[conic-gradient(from_180deg,transparent_0_300deg,#c9a84c_330deg,#ffd700_360deg)] opacity-70 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" style={{ animation: 'spin 6s linear infinite' }} />
 
-          {/* Background Image to replace plain black */}
-          <div className="absolute inset-0 z-0">
-            <Image
-              src="/page_3_img_1.jpeg"
-              alt="Pavilion Square KL"
-              fill
-              sizes="100vw"
-              className="object-cover"
-            />
-            {/* Dark overlays to create contrast for the white text while keeping the beautiful image visible */}
-            <div className="absolute inset-0 bg-[#030611]/50" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#030611] via-transparent to-[#030611]/90" />
-          </div>
+          {/* Inner Content Container */}
+          <div className="relative bg-[#030611] overflow-hidden rounded-t-[22px] sm:rounded-t-[30px] lg:rounded-t-[38px] h-full w-full">
 
-          <div className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 pt-8 sm:pt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            {/* Animated Background Image */}
+            <div className="absolute inset-0 z-0">
+              <motion.div
+                animate={{
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{
+                  duration: 20,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "linear",
+                }}
+                className="w-full h-full relative"
+              >
+                <Image
+                  src="/page_3_img_1.jpeg"
+                  alt="Pavilion Square KL Night View"
+                  fill
+                  sizes="100vw"
+                  className="object-cover"
+                />
+              </motion.div>
 
-            {/* Brand */}
-            <div className="lg:col-span-2 flex flex-col gap-4">
-              <div className="text-2xl font-heading font-black">
-                <span className="text-white">PAVILION</span>{" "}
-                <span style={{ WebkitTextFillColor: "transparent", background: "linear-gradient(135deg,#c9a84c,#ffd700)", WebkitBackgroundClip: "text", backgroundClip: "text" }}>SQUARE</span>
-              </div>
-              <div className="text-[11px] uppercase tracking-[0.2em] text-white/60 font-semibold">Kuala Lumpur • Malaysia</div>
-              <p className="text-[13px] text-white/80 leading-relaxed max-w-xs">
-                A landmark dual-tower mixed-use development by YNH Property Berhad, rising 62 floors above the heart of KLCC Precinct. Residences from RM 800K.
-              </p>
-              <div className="text-[11px] text-white/50">Developer: YNH Property Berhad</div>
+              {/* Deep gradient overlays for legibility */}
+              <div className="absolute inset-0 bg-[#030611]/70 backdrop-blur-[2px]" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#030611] via-[#030611]/90 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-b from-[#030611]/80 via-transparent to-transparent" />
             </div>
 
-            {/* Quick links */}
-            <div>
-              <div className="text-[10px] uppercase tracking-[0.3em] text-white/70 font-semibold mb-4">Quick Links</div>
-              <ul className="flex flex-col gap-2">
-                {quickLinks.map((l) => (
-                  <li key={l.label}>
-                    <a href={l.href} className="text-[13px] text-white/90 hover:text-[#c9a84c] transition-colors duration-200 hover-underline-gold">
-                      {l.label}
+            <div className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 pt-8 sm:pt-10 pb-4">
+
+              <div className="grid sm:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8">
+
+                {/* Brand Section */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                  className="lg:col-span-5 flex flex-col gap-6"
+                >
+                  <Link href="#hero" className="inline-block group w-fit">
+                    <div className="flex items-center gap-4 relative">
+                      <div className="relative w-14 h-14 flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0 border-2 border-[#c9a84c]/30 rotate-45 transition-transform duration-700 group-hover:rotate-[225deg] group-hover:border-[#c9a84c]" />
+                        <div className="absolute inset-0 border border-white/10 rotate-45 scale-90" />
+                        <span className="text-[#c9a84c] font-heading font-bold text-2xl relative z-10 transition-transform duration-500 group-hover:scale-110">P</span>
+                        <div className="absolute inset-0 bg-[#c9a84c]/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      </div>
+                      <div>
+                        <div className="text-2xl font-heading font-black tracking-[0.2em] text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-[#ffd700] transition-all duration-500">
+                          PAVILION
+                        </div>
+                        <div className="text-[14px] font-heading font-bold tracking-[0.4em] text-transparent bg-clip-text bg-gradient-to-r from-[#c9a84c] to-[#ffd700]">
+                          SQUARE
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+
+                  <p className="text-[14px] text-white/70 leading-relaxed max-w-md mt-2 font-light">
+                    A landmark dual-tower mixed-use development by YNH Property Berhad, rising 62 floors above the prestigious KLCC precinct, redefining urban luxury.
+                  </p>
+
+                  <div className="flex gap-4 mt-2">
+                    {socials.map((s, i) => (
+                      <motion.a
+                        key={s.label}
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 * i, type: "spring", stiffness: 200 }}
+                        className="group relative w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 overflow-hidden hover:border-[#c9a84c]/50 hover:-translate-y-1 hover:shadow-[0_10px_20px_-10px_rgba(201,168,76,0.4)] transition-all duration-300"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#c9a84c]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <s.icon className="w-4 h-4 text-white/60 group-hover:text-[#ffd700] relative z-10 transition-colors duration-300" />
+                      </motion.a>
+                    ))}
+                  </div>
+                </motion.div>
+
+                {/* Quick Links */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                  className="lg:col-span-3"
+                >
+                  <div className="text-[11px] uppercase tracking-[0.3em] text-[#c9a84c] font-bold mb-6 flex items-center gap-3">
+                    <div className="w-6 h-px bg-gradient-to-r from-transparent to-[#c9a84c]" />
+                    Navigation
+                  </div>
+                  <ul className="flex flex-col gap-3">
+                    {quickLinks.map((l, i) => (
+                      <motion.li
+                        key={l.label}
+                        initial={{ opacity: 0, x: -10 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 * i + 0.3 }}
+                      >
+                        <a
+                          href={l.href}
+                          className="group flex items-center gap-3 text-[14px] text-white/70 hover:text-white transition-colors duration-300 w-fit"
+                        >
+                          <span className="w-0 h-px bg-[#c9a84c] transition-all duration-300 group-hover:w-4" />
+                          <span className="relative overflow-hidden inline-block">
+                            {l.label}
+                            <span className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#ffd700] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
+                          </span>
+                        </a>
+                      </motion.li>
+                    ))}
+                  </ul>
+                </motion.div>
+
+                {/* Contact Information */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  className="lg:col-span-4"
+                >
+                  <div className="text-[11px] uppercase tracking-[0.3em] text-[#c9a84c] font-bold mb-6 flex items-center gap-3">
+                    <div className="w-6 h-px bg-gradient-to-r from-transparent to-[#c9a84c]" />
+                    Contact Us
+                  </div>
+
+                  <div className="flex flex-col gap-5">
+                    <a href="tel:+60323328808" className="group flex items-start gap-4 p-3 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-[#c9a84c]/30 transition-all duration-300">
+                      <div className="w-10 h-10 rounded-xl bg-[#c9a84c]/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                        <Phone className="w-4 h-4 text-[#c9a84c]" />
+                      </div>
+                      <div>
+                        <div className="text-[10px] uppercase tracking-[0.2em] text-white/40 mb-1">Sales Line</div>
+                        <div className="text-[15px] font-medium text-white/90 group-hover:text-[#ffd700] transition-colors">+603 2332 8808</div>
+                      </div>
                     </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
 
-            {/* Contact mini */}
-            <div>
-              <div className="text-[10px] uppercase tracking-[0.3em] text-white/70 font-semibold mb-4">Contact Us</div>
-              <div className="flex flex-col gap-3">
-                <a href="tel:+60323328808" className="flex items-center gap-2 text-[13px] text-white/90 hover:text-[#c9a84c] transition-colors">
-                  <Phone className="w-3.5 h-3.5" />+603 2332 8808
-                </a>
-                <a href="https://wa.link/kgsiw7" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[13px] text-white/90 hover:text-[#c9a84c] transition-colors">
-                  <MessageSquare className="w-3.5 h-3.5" />+6011 2880 8088
-                </a>
-                <div className="flex items-start gap-2 text-[12px] text-white/80">
-                  <MapPin className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-                  <span>Jalan Raja Chulan, 50200 Kuala Lumpur</span>
-                </div>
-                <div className="flex gap-2 mt-1">
-                  {socials.map((s) => (
-                    <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
-                      className="w-8 h-8 rounded-lg bg-white/5 border border-white/8 flex items-center justify-center hover:border-[#c9a84c]/40 hover:bg-[#c9a84c]/8 transition-all duration-200"
-                    >
-                      <s.icon className="w-3.5 h-3.5 text-white/70 hover:text-[#c9a84c]" />
+                    <a href="https://wa.link/kgsiw7" target="_blank" rel="noopener noreferrer" className="group flex items-start gap-4 p-3 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-[#25D366]/40 transition-all duration-300">
+                      <div className="w-10 h-10 rounded-xl bg-[#25D366]/10 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300 group-hover:shadow-[0_0_15px_rgba(37,211,102,0.4)]">
+                        <MessageSquare className="w-4 h-4 text-[#25D366]" />
+                      </div>
+                      <div>
+                        <div className="text-[10px] uppercase tracking-[0.2em] text-white/40 mb-1">WhatsApp</div>
+                        <div className="text-[15px] font-medium text-white/90 group-hover:text-[#25D366] transition-colors">+6011 2880 8088</div>
+                      </div>
                     </a>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
 
-          {/* Bottom bar */}
-          <div className="border-t border-white/5 px-6 py-5 max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
-            <div className="text-[11px] text-white/50">
-              © {new Date().getFullYear()} YNH Property Berhad. All rights reserved. Registration No.: 197701003905 (34592-A).
-            </div>
-            <div className="text-[11px] text-white/40 text-center sm:text-right max-w-sm">
-              Renders and information are indicative only. All data subject to change without notice. PDPA 2010 compliant.
+                    <div className="flex items-start gap-4 p-3 rounded-2xl bg-white/[0.02] border border-white/5">
+                      <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0">
+                        <MapPin className="w-4 h-4 text-white/60" />
+                      </div>
+                      <div>
+                        <div className="text-[10px] uppercase tracking-[0.2em] text-white/40 mb-1">Sales Gallery</div>
+                        <a href="https://maps.google.com/?q=Pavilion+Square+KL" target="_blank" rel="noopener noreferrer" className="text-[13px] leading-relaxed text-white/70 hover:text-white transition-colors">
+                          Level 3, Menara Khuan Choo,<br />75A Jalan Raja Chulan,<br />50200 Kuala Lumpur
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+              </div>
+
+              {/* Bottom Legal Bar - Cleaned up per user request */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, delay: 0.6 }}
+                className="mt-8 pt-6 border-t border-white/10 flex flex-col items-center justify-center gap-2 pb-6 text-center"
+              >
+                <div className="text-[12px] text-white/50 font-light">
+                  © {new Date().getFullYear()} YNH Property Berhad. All rights reserved.
+                </div>
+              </motion.div>
+
             </div>
           </div>
         </div>
