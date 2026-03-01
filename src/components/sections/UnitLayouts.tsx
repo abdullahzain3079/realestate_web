@@ -294,14 +294,12 @@ export default function UnitLayouts() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="text-2xl sm:text-3xl md:text-5xl font-heading font-black text-white leading-tight"
+              className="text-[12vw] min-[390px]:text-[13vw] sm:text-6xl md:text-7xl lg:text-8xl font-heading font-black text-white leading-[0.9] tracking-tight"
             >
               Unit <em style={{ fontStyle: "normal", WebkitTextFillColor: "transparent", background: "linear-gradient(135deg,#c9a84c,#ffd700)", WebkitBackgroundClip: "text", backgroundClip: "text" }}>Layouts</em>
             </motion.h2>
 
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#c9a84c]/10 border border-[#c9a84c]/30 text-[#c9a84c] text-[10px] uppercase tracking-widest font-bold">
-              <Star className="w-3 h-3" /> {units.length} Unit Types Available
-            </div>
+
           </div>
           <div className="section-divider mt-4" />
         </div>
@@ -310,7 +308,7 @@ export default function UnitLayouts() {
         <div className="flex flex-col gap-2 mb-4 sm:mb-6 pb-4 border-b border-white/10">
           {[units.slice(0, 4), units.slice(4)].map((row, rowIdx) =>
             row.length > 0 ? (
-              <div key={rowIdx} className="flex gap-2 flex-nowrap overflow-x-auto scrollbar-hide">
+              <div key={rowIdx} className="grid grid-cols-2 min-[430px]:grid-cols-4 gap-2 w-full">
                 {row.map((u, localIdx) => {
                   const i = rowIdx * 4 + localIdx;
                   const isActive = i === activeIdx;
@@ -320,7 +318,7 @@ export default function UnitLayouts() {
                       onClick={() => select(i)}
                       whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.96 }}
-                      className={`tab-pill relative overflow-hidden ${isActive ? "active" : ""
+                      className={`tab-pill relative overflow-hidden flex-shrink-0 w-full justify-center ${isActive ? "active" : ""
                         }`}
                     >
                       {isActive && (
@@ -344,7 +342,7 @@ export default function UnitLayouts() {
         <div className="flex-1 grid lg:grid-cols-12 gap-4 sm:gap-6 items-stretch align-middle">
 
           {/* Left — Details */}
-          <div className="lg:col-span-5 flex flex-col h-full bg-gradient-to-br from-[#0a0d1a]/70 via-[#060914]/60 to-[#0e0b18]/70 backdrop-blur-md border border-white/10 rounded-3xl p-4 sm:p-5 lg:p-6 overflow-hidden relative">
+          <div className="lg:col-span-5 flex flex-col h-full bg-[#0a0c10] border border-[#c9a84c]/40 rounded-3xl p-4 sm:p-5 lg:p-6 overflow-hidden relative shadow-lg">
             {/* Ambient glow */}
             <div className="pointer-events-none absolute -top-16 -left-16 w-48 h-48 rounded-full bg-[#c9a84c]/10 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-10 -right-10 w-36 h-36 rounded-full bg-[#ffd700]/5 blur-2xl" />
@@ -398,8 +396,8 @@ export default function UnitLayouts() {
 
                   {/* Quick info grid */}
                   <motion.div
-                    variants={{ hidden: { opacity: 0, scale: 0.96 }, show: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 0.97 } }}
-                    transition={{ duration: 0.45 }}
+                    variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -6 } }}
+                    transition={{ duration: 0.4 }}
                     className="grid grid-cols-2 gap-2 mb-3"
                   >
                     {[
@@ -432,10 +430,10 @@ export default function UnitLayouts() {
                       return (
                         <motion.div
                           key={f}
-                          initial={{ opacity: 0, scale: 0.88 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: fi * 0.06, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                          className="group/feat flex items-center gap-2 px-2.5 py-2 rounded-xl border bg-[#c9a84c]/6 border-[#c9a84c]/20 hover:border-[#c9a84c]/45 hover:bg-[#c9a84c]/12 transition-all duration-300 cursor-default"
+                          initial={{ opacity: 0, y: 5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: fi * 0.04, duration: 0.3, ease: "easeOut" }}
+                          className="group/feat flex items-center gap-2 px-2.5 py-2 rounded-xl border bg-[#c9a84c]/6 border-[#c9a84c]/20 hover:border-[#c9a84c]/45 hover:bg-[#c9a84c]/12 transition-colors duration-300 cursor-default"
                         >
                           <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 bg-[#c9a84c]/10 group-hover/feat:bg-[#c9a84c]/20 group-hover/feat:scale-110 transition-all duration-300">
                             <Icon className="w-3 h-3 text-[#c9a84c]" />
@@ -474,11 +472,11 @@ export default function UnitLayouts() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={`img-${activeIdx}`}
-                initial={{ opacity: 0, clipPath: "inset(0 100% 0 0 round 24px)" }}
-                animate={{ opacity: 1, clipPath: "inset(0 0% 0 0 round 24px)" }}
-                exit={{ opacity: 0, scale: 1.04, filter: "blur(6px)" }}
-                transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-                className="relative w-full h-full rounded-3xl overflow-hidden border border-white/10 group img-card-hover"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.05 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="relative w-full h-full rounded-3xl overflow-hidden border border-[#c9a84c]/40 shadow-lg group img-card-hover"
               >
                 <Image
                   src={activeUnit.image}

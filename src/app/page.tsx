@@ -12,7 +12,7 @@ import SectionDivider from "@/components/ui/SectionDivider";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-dark-bg relative">
+    <main className="min-h-screen bg-dark-bg relative overflow-x-hidden w-full max-w-[100vw]">
       <Navbar />
       <ScrollProgress />
 

@@ -87,10 +87,10 @@ function InputField({ label, required, error, step, icon: Icon, children }: { la
 }
 
 const inputCls =
-  "w-full bg-[#060914]/60 border border-white/10 rounded-xl px-5 py-4 text-[15px] text-white placeholder-white/20 focus:outline-none focus:border-[#c9a84c]/60 focus:ring-1 focus:ring-[#c9a84c]/30 focus:bg-[#060914]/80 shadow-inner transition-all duration-300 backdrop-blur-md";
+  "w-full bg-[#060914] md:bg-[#060914]/60 border border-white/10 rounded-xl px-5 py-4 text-[15px] text-white placeholder-white/20 focus:outline-none focus:border-[#c9a84c]/60 focus:ring-1 focus:ring-[#c9a84c]/30 focus:bg-[#060914] shadow-inner transition-all duration-300 md:backdrop-blur-md";
 
 const inputWithIconCls =
-  "w-full bg-[#060914]/60 border border-white/10 rounded-xl pl-11 pr-5 py-4 text-[15px] text-white placeholder-white/20 focus:outline-none focus:border-[#c9a84c]/60 focus:ring-1 focus:ring-[#c9a84c]/30 focus:bg-[#060914]/80 shadow-inner transition-all duration-300 backdrop-blur-md";
+  "w-full bg-[#060914] md:bg-[#060914]/60 border border-white/10 rounded-xl pl-11 pr-5 py-4 text-[15px] text-white placeholder-white/20 focus:outline-none focus:border-[#c9a84c]/60 focus:ring-1 focus:ring-[#c9a84c]/30 focus:bg-[#060914] shadow-inner transition-all duration-300 md:backdrop-blur-md";
 
 /* ── Component ───────────────────────────────────────── */
 export default function Contact() {
@@ -196,68 +196,30 @@ export default function Contact() {
           </div>
 
           {/* Gallery controls top, Stat boxes bottom */}
-          <div className="flex flex-col items-start gap-6 mt-6">
-            {/* Gallery slider controls FIRST */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={galPrev}
-                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-[#c9a84c]/20 hover:border-[#c9a84c]/50 transition-all"
-                aria-label="Previous Slide"
+          {/* Gallery slider controls */}
+
+
+          {/* Stat Boxes SECOND (below) */}
+          <div className="flex gap-3 mt-6 sm:mt-8">
+            {[
+              { num: "67", label: "Floors" },
+              { num: "5★", label: "Luxury" },
+              { num: "KLCC", label: "Location" },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className="flex flex-col items-center justify-center w-[80px] h-[64px] min-[480px]:w-[100px] min-[480px]:h-[80px] rounded-2xl bg-[#060914]/90 min-[480px]:bg-white/[0.04] border border-white/10 min-[480px]:backdrop-blur-sm hover:border-[#c9a84c]/40 transition-all duration-300 group"
               >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <div className="flex gap-1.5 px-2">
-                {gallery.slice(0, 8).map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => { galPaused.current = true; setGalIdx(i); setTimeout(() => { galPaused.current = false; }, 7000); }}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${i === galIdx ? "w-6 bg-gradient-to-r from-[#c9a84c] to-[#ffd700]" : "w-1.5 bg-white/30 hover:bg-white/50"}`}
-                    aria-label={`Slide ${i + 1}`}
-                  />
-                ))}
+                <span className="stat-number text-xl font-heading font-black group-hover:scale-110 transition-transform duration-300">
+                  {stat.num}
+                </span>
+                <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-semibold mt-1">
+                  {stat.label}
+                </span>
               </div>
-              <button
-                onClick={galNext}
-                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-[#c9a84c]/20 hover:border-[#c9a84c]/50 transition-all"
-                aria-label="Next Slide"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Stat Boxes SECOND (below) */}
-            <div className="flex gap-3">
-              {[
-                { num: "62", label: "Floors" },
-                { num: "5★", label: "Luxury" },
-                { num: "KLCC", label: "Location" },
-              ].map((stat) => (
-                <div
-                  key={stat.label}
-                  className="flex flex-col items-center justify-center w-[80px] h-[64px] min-[480px]:w-[100px] min-[480px]:h-[80px] rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-sm hover:border-[#c9a84c]/40 transition-all duration-300 group"
-                >
-                  <span className="stat-number text-xl font-heading font-black group-hover:scale-110 transition-transform duration-300">
-                    {stat.num}
-                  </span>
-                  <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-semibold mt-1">
-                    {stat.label}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Mobile slider controls */}
-        <div className="flex lg:hidden items-center gap-2 mb-6">
-          <button onClick={galPrev} className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-[#c9a84c]/20 hover:border-[#c9a84c]/50 transition-all" aria-label="Previous Slide"><ChevronLeft className="w-4 h-4" /></button>
-          <div className="flex gap-1.5 px-2">
-            {gallery.slice(0, 8).map((_, i) => (
-              <button key={i} onClick={() => { galPaused.current = true; setGalIdx(i); setTimeout(() => { galPaused.current = false; }, 7000); }} className={`h-1.5 rounded-full transition-all duration-300 ${i === galIdx ? "w-6 bg-gradient-to-r from-[#c9a84c] to-[#ffd700]" : "w-1.5 bg-white/30 hover:bg-white/50"}`} aria-label={`Slide ${i + 1}`} />
             ))}
           </div>
-          <button onClick={galNext} className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-[#c9a84c]/20 hover:border-[#c9a84c]/50 transition-all" aria-label="Next Slide"><ChevronRight className="w-4 h-4" /></button>
-        </div>
+        </motion.div>
 
         {/* ── TWO-COLUMN: CONTACT BOXES + FORM ── */}
         <div className="grid lg:grid-cols-5 gap-6 lg:gap-10 items-start">
@@ -273,7 +235,7 @@ export default function Contact() {
             {/* Contact items */}
             <div className="flex flex-col gap-4">
               {contactInfo.map((c) => (
-                <div key={c.label} className="group glow-card glow-card-slow bg-white/5 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-4 hover:bg-white/10 transition-all duration-300 min-h-[76px]">
+                <div key={c.label} className="group glow-card glow-card-slow bg-[#060914]/90 md:bg-white/5 md:backdrop-blur-sm rounded-2xl p-4 flex items-center gap-4 hover:bg-[#060914] md:hover:bg-white/10 transition-all duration-300 min-h-[76px]">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#c9a84c]/15 to-transparent border border-[#c9a84c]/20 flex items-center justify-center flex-shrink-0">
                     <c.icon className="w-5 h-5 text-[#c9a84c]" />
                   </div>
@@ -351,7 +313,7 @@ export default function Contact() {
                 <motion.form
                   key="form"
                   onSubmit={handleSubmit}
-                  className="bg-[#060914]/40 backdrop-blur-3xl border border-[#c9a84c]/40 rounded-3xl p-5 min-[480px]:p-8 sm:p-10 flex flex-col gap-5 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] relative"
+                  className="bg-[#060914]/40 backdrop-blur-3xl border border-[#c9a84c]/40 rounded-3xl p-6 sm:p-10 flex flex-col gap-5 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] relative"
                   noValidate
                 >
                   {/* Gold accent bar at top */}
@@ -363,11 +325,11 @@ export default function Contact() {
                   {/* Premium subtle glow overlay inside the form */}
                   <div className="absolute inset-0 bg-gradient-to-b from-white/[0.03] to-transparent rounded-3xl pointer-events-none" />
 
-                  <div className="relative">
+                  <div className="relative mb-2">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-[9px] uppercase tracking-[0.3em] text-[#ffd700]/70 font-semibold px-2 py-0.5 rounded-full bg-[#c9a84c]/10 border border-[#c9a84c]/20">Exclusive Preview</span>
                     </div>
-                    <div className="text-[12px] uppercase tracking-[0.3em] text-[#c9a84c] font-bold mt-2">Priority Registration</div>
+                    <div className="text-[12px] min-[390px]:text-[13px] uppercase tracking-[0.3em] text-[#c9a84c] font-bold mt-2">Priority Registration</div>
                   </div>
 
                   <InputField label="Full Name" required error={errors.name} step={1} icon={User}>
@@ -427,7 +389,7 @@ export default function Contact() {
                   </div>
 
                   {/* Buttons — perfectly inline */}
-                  <div className="grid sm:grid-cols-2 gap-4 mt-1 items-stretch">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 min-[390px]:gap-5 pt-3 items-stretch">
                     <button
                       type="submit"
                       disabled={submitting}
@@ -461,15 +423,16 @@ export default function Contact() {
             </AnimatePresence>
           </motion.div>
         </div>
-      </div>
+      </div >
 
       {/* ── FOOTER ────────────────────────────────────── */}
-      <footer className="relative mt-12 sm:mt-16 w-full">
+      < footer className="relative mt-12 sm:mt-16 w-full" >
         {/* Animated Glow Border Wrapper - Oval Top Only */}
-        <div className="relative rounded-t-[24px] sm:rounded-t-[32px] lg:rounded-t-[40px] pt-[2px] overflow-hidden group shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+        < div className="relative rounded-t-[24px] sm:rounded-t-[32px] lg:rounded-t-[40px] pt-[2px] overflow-hidden group shadow-[0_-20px_50px_rgba(0,0,0,0.5)]" >
           {/* Animated conic gradients for the tracing border effect */}
-          <div className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] bg-[conic-gradient(from_0deg,transparent_0_300deg,#c9a84c_330deg,#ffd700_360deg)] opacity-70 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" style={{ animation: 'spin 6s linear infinite' }} />
-          <div className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] bg-[conic-gradient(from_180deg,transparent_0_300deg,#c9a84c_330deg,#ffd700_360deg)] opacity-70 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" style={{ animation: 'spin 6s linear infinite' }} />
+          < div className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] bg-[conic-gradient(from_0deg,transparent_0_300deg,#c9a84c_330deg,#ffd700_360deg)] opacity-70 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" style={{ animation: 'spin 6s linear infinite' }
+          } />
+          < div className="absolute w-[200%] h-[200%] top-[-50%] left-[-50%] bg-[conic-gradient(from_180deg,transparent_0_300deg,#c9a84c_330deg,#ffd700_360deg)] opacity-70 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" style={{ animation: 'spin 6s linear infinite' }} />
 
           {/* Inner Content Container */}
           <div className="relative bg-[#030611] overflow-hidden rounded-t-[22px] sm:rounded-t-[30px] lg:rounded-t-[38px] h-full w-full">
@@ -508,11 +471,7 @@ export default function Contact() {
               <div className="grid sm:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8">
 
                 {/* Brand Section */}
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8 }}
+                <div
                   className="lg:col-span-5 flex flex-col gap-6"
                 >
                   <Link href="#hero" className="inline-block group w-fit">
@@ -535,35 +494,27 @@ export default function Contact() {
                   </Link>
 
                   <p className="text-[14px] text-white/70 leading-relaxed max-w-md mt-2 font-light">
-                    A landmark dual-tower mixed-use development by YNH Property Berhad, rising 62 floors above the prestigious KLCC precinct, redefining urban luxury.
+                    A landmark dual-tower mixed-use development by YNH Property Berhad, rising 67 floors above the prestigious KLCC precinct, redefining urban luxury.
                   </p>
 
                   <div className="flex gap-4 mt-2">
                     {socials.map((s, i) => (
-                      <motion.a
+                      <a
                         key={s.label}
                         href={s.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.1 * i, type: "spring", stiffness: 200 }}
                         className="group relative w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 overflow-hidden hover:border-[#c9a84c]/50 hover:-translate-y-1 hover:shadow-[0_10px_20px_-10px_rgba(201,168,76,0.4)] transition-all duration-300"
                       >
                         <div className="absolute inset-0 bg-gradient-to-br from-[#c9a84c]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         <s.icon className="w-4 h-4 text-white/60 group-hover:text-[#ffd700] relative z-10 transition-colors duration-300" />
-                      </motion.a>
+                      </a>
                     ))}
                   </div>
-                </motion.div>
+                </div>
 
                 {/* Quick Links */}
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
+                <div
                   className="lg:col-span-3"
                 >
                   <div className="text-[11px] uppercase tracking-[0.3em] text-[#c9a84c] font-bold mb-6 flex items-center gap-3">
@@ -572,12 +523,8 @@ export default function Contact() {
                   </div>
                   <ul className="flex flex-col gap-3">
                     {quickLinks.map((l, i) => (
-                      <motion.li
+                      <li
                         key={l.label}
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.1 * i + 0.3 }}
                       >
                         <a
                           href={l.href}
@@ -589,17 +536,13 @@ export default function Contact() {
                             <span className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#ffd700] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
                           </span>
                         </a>
-                      </motion.li>
+                      </li>
                     ))}
                   </ul>
-                </motion.div>
+                </div>
 
                 {/* Contact Information */}
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
+                <div
                   className="lg:col-span-4"
                 >
                   <div className="text-[11px] uppercase tracking-[0.3em] text-[#c9a84c] font-bold mb-6 flex items-center gap-3">
@@ -640,27 +583,23 @@ export default function Contact() {
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
 
               </div>
 
               {/* Bottom Legal Bar - Cleaned up per user request */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, delay: 0.6 }}
+              <div
                 className="mt-8 pt-6 border-t border-white/10 flex flex-col items-center justify-center gap-2 pb-6 text-center"
               >
                 <div className="text-[12px] text-white/50 font-light">
                   © {new Date().getFullYear()} YNH Property Berhad. All rights reserved.
                 </div>
-              </motion.div>
+              </div>
 
             </div>
           </div>
-        </div>
-      </footer>
-    </section>
+        </div >
+      </footer >
+    </section >
   );
 }

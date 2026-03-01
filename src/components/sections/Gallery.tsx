@@ -37,9 +37,11 @@ const FloatingParticles = () => {
 
   useEffect(() => {
     setMounted(true);
-    // Generate beautiful "ember" like particles of varying sizes
+    const isMobile = window.innerWidth < 768;
+
+    // Generate beautiful "ember" like particles of varying sizes (Desktop only to prevent lag)
     setParticles(
-      Array.from({ length: window.innerWidth < 640 ? 30 : 60 }).map((_, i) => ({
+      isMobile ? [] : Array.from({ length: 60 }).map((_, i) => ({
         id: i,
         // Most particles are small, some are larger
         size: Math.random() > 0.8 ? Math.random() * 5 + 3 : Math.random() * 2 + 1,
@@ -51,6 +53,8 @@ const FloatingParticles = () => {
       }))
     );
 
+    if (isMobile) return; // Skip mouse tracking on mobile
+
     const handleMouseMove = (e: MouseEvent) => {
       // Offset from center of screen for parallax effect
       mouseX.set(e.clientX - window.innerWidth / 2);
@@ -61,10 +65,10 @@ const FloatingParticles = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [mouseX, mouseY]);
 
-  if (!mounted) {
+  if (!mounted || particles.length === 0) {
     return (
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-[#c9a84c]/5 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-[#c9a84c]/5 blur-[80px] rounded-full pointer-events-none" />
       </div>
     );
   }
@@ -261,7 +265,7 @@ export default function Gallery() {
 
               <div className="absolute inset-0 bg-gradient-to-t from-[#060914]/90 via-[#060914]/20 to-transparent" />
 
-              <div className="absolute bottom-0 left-0 right-0 p-4 min-[480px]:p-6 md:p-10 flex justify-between items-end">
+              <div className="absolute bottom-0 left-0 right-0 p-4 min-[480px]:p-6 md:p-10 flex justify-start items-end">
                 <div>
                   <motion.span
                     initial={{ y: 20, opacity: 0 }}
@@ -280,16 +284,6 @@ export default function Gallery() {
                     {currentImage.alt}
                   </motion.h3>
                 </div>
-
-                <motion.button
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="hidden md:flex w-12 h-12 rounded-full bg-white/10 backdrop-blur-md items-center justify-center border border-white/20 text-white hover:bg-[#c9a84c]/20 hover:border-[#c9a84c]/50 transition-colors"
-                >
-                  <Maximize2 className="w-5 h-5" />
-                </motion.button>
               </div>
             </motion.div>
           </AnimatePresence>
@@ -297,7 +291,7 @@ export default function Gallery() {
           {/* Navigation Controls */}
           <button
             onClick={() => paginate(-1)}
-            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 min-[480px]:w-12 min-[480px]:h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white hover:bg-[#c9a84c]/20 hover:border-[#c9a84c]/50 transition-all hover:scale-110 group shadow-xl"
+            className="absolute left-2 sm:left-4 top-[55%] sm:top-1/2 -translate-y-1/2 z-20 w-10 h-10 min-[480px]:w-12 min-[480px]:h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white hover:bg-[#c9a84c]/20 hover:border-[#c9a84c]/50 transition-all hover:scale-110 group shadow-xl"
             aria-label="Previous image"
           >
             <ChevronLeft className="w-6 h-6 md:w-8 md:h-8 group-hover:-translate-x-1 transition-transform text-[#e6c154]" />
@@ -305,7 +299,7 @@ export default function Gallery() {
 
           <button
             onClick={() => paginate(1)}
-            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 min-[480px]:w-12 min-[480px]:h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white hover:bg-[#c9a84c]/20 hover:border-[#c9a84c]/50 transition-all hover:scale-110 group shadow-xl"
+            className="absolute right-2 sm:right-4 top-[55%] sm:top-1/2 -translate-y-1/2 z-20 w-10 h-10 min-[480px]:w-12 min-[480px]:h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white hover:bg-[#c9a84c]/20 hover:border-[#c9a84c]/50 transition-all hover:scale-110 group shadow-xl"
             aria-label="Next image"
           >
             <ChevronRight className="w-6 h-6 md:w-8 md:h-8 group-hover:translate-x-1 transition-transform text-[#e6c154]" />

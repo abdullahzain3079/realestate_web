@@ -194,7 +194,7 @@ export default function VirtualTour() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.1 * i }}
-                  className="group flex items-start gap-4 p-3 sm:p-4 rounded-2xl glow-card glow-card-slow cursor-default"
+                  className="group flex items-start gap-4 p-3 sm:p-4 rounded-2xl glow-card glow-card-slow cursor-default bg-white/[0.02]"
                 >
                   <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#c9a84c]/20 to-[#c9a84c]/5 border border-[#c9a84c]/25 flex items-center justify-center flex-shrink-0 group-hover:border-[#ffd700]/45 group-hover:shadow-[0_0_16px_rgba(255,215,0,0.15)] transition-all duration-300">
                     <f.icon className="w-5 h-5 text-[#c9a84c]" />

@@ -88,7 +88,7 @@ export default function Facilities() {
   const selectLevel = (i: number) => { setActiveIdx(i); setPaused(true); setTimeout(() => setPaused(false), 10000); };
 
   return (
-    <section id="facilities" ref={sectionRef} className="relative min-h-screen overflow-hidden bg-[#060914]">
+    <section id="facilities" className="relative min-h-screen w-full bg-[#060914] pt-20 pb-20 overflow-hidden">
 
       {/* Full-bleed background per level */}
       {levels.map((l, i) => (
@@ -123,7 +123,7 @@ export default function Facilities() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-2xl min-[480px]:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-black text-white leading-tight"
+            className="text-[12vw] min-[390px]:text-[13vw] sm:text-5xl md:text-6xl lg:text-7xl font-heading font-black text-white leading-[0.9] tracking-tight"
           >
             Sky-High <em style={{ fontStyle: "normal", WebkitTextFillColor: "transparent", background: "linear-gradient(135deg,#c9a84c,#ffd700)", WebkitBackgroundClip: "text", backgroundClip: "text" }}>Facilities</em>
             <br />Like No Other
@@ -138,16 +138,16 @@ export default function Facilities() {
           />
         </div>
 
-        {/* Level tabs */}
-        <div className="flex gap-1 mb-8 sm:mb-10 border-b border-white/10 overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+        {/* Level tabs - Grid layout for mobile */}
+        <div className="grid grid-cols-2 sm:flex sm:justify-center gap-2 mb-2 sm:mb-6 px-4 sm:px-0 -mx-4 sm:mx-0 w-[calc(100%+2rem)] sm:w-auto">
           {levels.map((l, i) => (
             <button
               key={l.id}
               onClick={() => selectLevel(i)}
-              className={`tab-pill ${i === activeIdx ? "active" : ""}`}
+              className={`tab-pill whitespace-nowrap justify-center w-full px-2 py-2.5 min-[390px]:py-3 sm:px-4 sm:py-2 ${i === activeIdx ? "active" : ""}`}
             >
-              <span className="mr-1.5 text-[10px]">{l.id}</span>
-              {l.headline.split(" ").slice(0, 2).join(" ")}
+              <span className="mr-1 min-[390px]:mr-1.5 text-[10px] min-[390px]:text-[11px] font-bold opacity-80">{l.id}</span>
+              <span className="text-[11px] min-[390px]:text-[12px] truncate">{l.headline.split(" ").slice(0, 2).join(" ")}</span>
             </button>
           ))}
         </div>
@@ -167,19 +167,19 @@ export default function Facilities() {
                 className="flex-1 flex flex-col justify-center"
               >
                 {/* Level badge */}
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 w-fit text-[11px] uppercase tracking-widest font-bold"
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4 min-[390px]:mb-6 w-fit text-[10px] min-[390px]:text-[11px] uppercase tracking-widest font-bold"
                   style={{ background: `${active.accent}18`, border: `1px solid ${active.accent}35`, color: active.accent }}>
                   <active.icon className="w-3.5 h-3.5" />
                   {active.level}
                 </div>
 
-                <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-black text-white mb-4 leading-tight">
+                <h3 className="text-3xl min-[390px]:text-4xl sm:text-5xl lg:text-6xl font-heading font-black text-white mb-3 min-[390px]:mb-4 leading-tight tracking-tight">
                   {active.headline}
                 </h3>
-                <div className="text-[#c9a84c]/90 text-base sm:text-lg mb-6 font-medium bg-gradient-to-r from-[#c9a84c]/20 to-transparent p-4 rounded-xl border-l-4 border-[#c9a84c]">
+                <div className="text-[#c9a84c]/90 text-[13px] min-[390px]:text-[15px] sm:text-lg mb-4 min-[390px]:mb-6 font-medium bg-gradient-to-r from-[#c9a84c]/15 to-transparent p-3 min-[390px]:p-4 rounded-xl border-l-4 border-[#c9a84c] leading-snug">
                   {active.tagline}
                 </div>
-                <p className="text-white/70 leading-relaxed text-sm sm:text-base lg:text-lg xl:text-xl max-w-2xl font-light">
+                <p className="text-white/75 leading-relaxed text-[13px] min-[390px]:text-sm sm:text-base lg:text-lg xl:text-xl max-w-2xl font-light">
                   {active.description}
                 </p>
               </motion.div>
@@ -195,7 +195,7 @@ export default function Facilities() {
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 exit={{ opacity: 0, x: -40, scale: 1.03 }}
                 transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 img-card-hover min-h-[280px] sm:min-h-[360px] lg:min-h-[420px]"
+                className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 img-card-hover min-h-[420px] min-[390px]:min-h-[480px] sm:min-h-[500px] lg:min-h-[420px]"
               >
                 {/* Main image */}
                 <Image
@@ -206,37 +206,9 @@ export default function Facilities() {
                   className="object-cover"
                 />
 
-                {/* Deep bottom gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#060914]/90 via-[#060914]/20 to-transparent" />
-
-                {/* Accent glow overlay */}
-                <motion.div
-                  className="absolute inset-0"
-                  animate={{ opacity: [0.4, 0.7, 0.4] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  style={{ background: `radial-gradient(ellipse at 75% 15%, ${active.accent}22 0%, transparent 65%)` }}
-                />
-
-                {/* Top-left level badge */}
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="absolute top-5 left-5 flex items-center gap-2 text-xs uppercase tracking-widest font-bold px-3 py-1.5 rounded-full backdrop-blur-md"
-                  style={{ background: `${active.accent}28`, border: `1px solid ${active.accent}50`, color: active.accent }}
-                >
-                  <active.icon className="w-3.5 h-3.5" />
-                  {active.level}
-                </motion.div>
-
-                {/* Top-right corner accent */}
-                <div
-                  className="absolute top-0 right-0 w-24 h-24 pointer-events-none rounded-tr-2xl sm:rounded-tr-3xl"
-                  style={{ background: `linear-gradient(225deg, ${active.accent}25 0%, transparent 65%)` }}
-                />
-
+                {/* Deep bottom gradient removed and replaced with unified frosted glass */}
                 {/* Bottom content */}
-                <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 bg-gradient-to-t from-[#060914] via-[#060914]/80 to-transparent">
+                <div className="absolute bottom-0 left-0 right-0 p-5 min-[390px]:p-6 bg-[#060914]/60 backdrop-blur-xl border-t border-white/10 rounded-t-2xl sm:rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
                   {/* Thin accent rule */}
                   <motion.div
                     key={`rule-${active.id}`}
@@ -244,52 +216,51 @@ export default function Facilities() {
                     animate={{ scaleX: 1 }}
                     transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
                     style={{ transformOrigin: "left center", background: `linear-gradient(90deg, ${active.accent}, transparent)` }}
-                    className="h-[2px] w-full mb-4"
+                    className="h-[2px] w-full mb-3 min-[390px]:mb-4"
                   />
 
-                  <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-3 min-[390px]:gap-4">
                     {/* Stat row */}
                     <div className="flex justify-between items-end">
                       <div>
-                        <div className="text-white/50 text-[11px] uppercase tracking-[0.2em] mb-1 font-bold">{active.statLabel}</div>
-                        <div className="text-4xl sm:text-5xl font-heading font-black leading-none stat-number tracking-tight" style={{ color: active.accent }}>
+                        {active.statLabel && <div className="text-white/50 text-[10px] min-[390px]:text-[11px] uppercase tracking-[0.2em] mb-1 font-bold">{active.statLabel}</div>}
+                        <div className="text-3xl min-[390px]:text-4xl sm:text-5xl font-heading font-black leading-none stat-number tracking-tight" style={{ color: active.accent }}>
                           {active.stat}
                         </div>
                       </div>
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-lg" style={{ background: `${active.accent}15`, border: `1px solid ${active.accent}40` }}>
-                        <active.icon className="w-6 h-6" style={{ color: active.accent }} />
+                      <div className="w-10 h-10 min-[390px]:w-12 min-[390px]:h-12 rounded-xl flex items-center justify-center shrink-0 shadow-lg" style={{ background: `${active.accent}15`, border: `1px solid ${active.accent}40` }}>
+                        <active.icon className="w-5 h-5 min-[390px]:w-6 min-[390px]:h-6" style={{ color: active.accent }} />
                       </div>
                     </div>
 
                     {/* Features grid */}
-                    <div className="grid grid-cols-1 min-[400px]:grid-cols-2 gap-2 mt-2">
+                    <div className="grid grid-cols-1 min-[390px]:grid-cols-2 gap-2 mt-1 min-[390px]:mt-2">
                       {active.features.map((f, i) => (
                         <motion.div
                           key={`${active.id}-feature-${i}`}
-                          initial={{ opacity: 0, y: 10 }}
+                          initial={{ opacity: 0, y: 8 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.4, delay: 0.2 + (i * 0.05) }}
-                          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-black/40 backdrop-blur-md border border-white/5 hover:border-white/15 transition-colors group"
+                          transition={{ duration: 0.3, delay: 0.1 + (i * 0.04) }}
+                          className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-[#c9a84c]/40 hover:bg-[#c9a84c]/10 transition-colors group"
                         >
-                          <CheckCircle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: active.accent }} />
-                          <span className="text-[11px] sm:text-xs text-white/80 group-hover:text-white transition-colors font-medium leading-tight truncate">{f}</span>
+                          <CheckCircle className="w-3.5 h-3.5 flex-shrink-0 group-hover:scale-110 transition-transform" style={{ color: active.accent }} />
+                          <span className="text-[11px] min-[390px]:text-[12px] sm:text-xs text-white/85 group-hover:text-white transition-colors font-medium leading-tight truncate">{f}</span>
                         </motion.div>
                       ))}
                     </div>
                   </div>
                 </div>
 
-                {/* Animated glowing border */}
+                {/* Animated glowing border - Optimized for Mobile GPU */}
+                <div
+                  className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
+                  style={{ boxShadow: `inset 0 0 0 1px ${active.accent}30, 0 8px 40px ${active.accent}15` }}
+                />
                 <motion.div
                   className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
-                  animate={{
-                    boxShadow: [
-                      `inset 0 0 0 1px ${active.accent}18, 0 8px 50px ${active.accent}10`,
-                      `inset 0 0 0 1px ${active.accent}40, 0 8px 70px ${active.accent}22`,
-                      `inset 0 0 0 1px ${active.accent}18, 0 8px 50px ${active.accent}10`,
-                    ],
-                  }}
+                  animate={{ opacity: [0.3, 1, 0.3] }}
                   transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                  style={{ boxShadow: `inset 0 0 0 2px ${active.accent}60, 0 8px 60px ${active.accent}30` }}
                 />
 
                 {/* Progress bar — auto-advance indicator */}

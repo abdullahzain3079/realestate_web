@@ -143,7 +143,7 @@ export default function Concierge() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 mb-14"
+          className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-14"
         >
           {stats.map((s, i) => (
             <motion.div
@@ -198,7 +198,7 @@ export default function Concierge() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.15, duration: 0.7, ease: "easeOut" }}
-                  className="group relative h-[340px] min-[480px]:h-[420px] sm:h-[480px] rounded-2xl overflow-hidden cursor-pointer shadow-2xl"
+                  className="group relative h-[420px] min-[390px]:h-[480px] sm:h-[480px] rounded-2xl overflow-hidden cursor-pointer shadow-2xl border border-[#c9a84c]/30 hover:border-[#c9a84c]/60 transition-colors duration-500"
                 >
                   {/* Background Image */}
                   <div className="absolute inset-0 bg-[#060914]">
@@ -235,10 +235,11 @@ export default function Concierge() {
                         </h3>
                       </div>
                     </div>
-
-                    <p className="text-[13px] sm:text-[15px] text-white/70 leading-relaxed transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
-                      {svc.desc}
-                    </p>
+                    <div className="pt-2 sm:pt-0">
+                      <p className="text-[13px] sm:text-[15px] text-white/90 sm:text-white/70 leading-relaxed transform translate-y-2 group-hover:translate-y-0 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-500 drop-shadow-md">
+                        {svc.desc}
+                      </p>
+                    </div>
 
                     {/* Hover Glow Effects */}
                     <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-tr-2xl pointer-events-none" />

@@ -106,7 +106,7 @@ export default function LocationFacts() {
   const contentOpacity = useTransform(scrollYProgress, [0, 0.12, 0.88, 1], [0, 1, 1, 0]);
 
   return (
-    <section id="location" ref={sectionRef} className="relative min-h-[89dvh] w-full overflow-hidden bg-[#060914] flex flex-col pt-6 pb-6">
+    <section id="location" ref={sectionRef} className="relative min-h-[92dvh] sm:min-h-[89dvh] w-full overflow-hidden bg-[#060914] flex flex-col pt-24 min-[390px]:pt-28 sm:pt-24 pb-16 min-[390px]:pb-20 sm:pb-16">
       <BgSlider current={current} slides={slides} />
 
       {/* Content — left-aligned, right half reveals background photo */}
@@ -141,12 +141,13 @@ export default function LocationFacts() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: -40, opacity: 0 }}
                 transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                className="text-3xl min-[480px]:text-4xl sm:text-5xl md:text-6xl lg:text-[5rem] xl:text-[5.5rem] font-heading font-black text-white leading-[0.92] tracking-tight"
+                className="text-[10vw] min-[390px]:text-[11vw] sm:text-5xl md:text-6xl lg:text-[5rem] xl:text-[5.5rem] flex flex-wrap gap-x-[1.5vw] min-[390px]:gap-x-2 sm:gap-x-4 font-heading font-black text-white leading-[0.92] tracking-tight"
               >
                 {slides[current].headline.split(" ").map((w, i) =>
                   i === slides[current].headline.split(" ").length - 1 ? (
                     <span
                       key={i}
+                      className="mr-3 min-[390px]:mr-4 sm:mr-6"
                       style={{
                         WebkitTextFillColor: "transparent",
                         background: "linear-gradient(135deg,#c9a84c,#ffd700,#f0d070)",
@@ -155,8 +156,8 @@ export default function LocationFacts() {
                         textShadow: "none",
                         filter: "drop-shadow(0 0 15px rgba(255, 217, 0, 0.66)) drop-shadow(0 0 5px rgba(255,255,255,0.2))",
                       }}
-                    >{w} </span>
-                  ) : <span key={i} style={{ textShadow: "0 2px 10px rgba(0,0,0,0.2)" }}>{w} </span>
+                    >{w}</span>
+                  ) : <span key={i} className="mr-3 min-[390px]:mr-4 sm:mr-6" style={{ textShadow: "0 2px 10px rgba(0,0,0,0.2)" }}>{w}</span>
                 )}
               </motion.h1>
             </AnimatePresence>
@@ -199,8 +200,8 @@ export default function LocationFacts() {
                 <div className="relative p-[1px] rounded-full overflow-hidden bg-white/5">
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#ffd700]/25 to-transparent w-[200%] animate-[slideProgress_3s_linear_infinite]"></div>
                   <div className="relative flex items-center gap-2.5 px-6 sm:px-8 py-2.5 sm:py-3 bg-[#08070c] backdrop-blur-xl rounded-full">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#ffd700] animate-pulse shadow-[0_0_3px_rgba(255,215,0,0.25)]"></div>
-                    <span className="text-[11px] sm:text-[12px] uppercase tracking-[0.25em] sm:tracking-[0.3em] font-bold bg-gradient-to-r from-[#ffd700] via-[#f0d070] to-[#c9a84c] bg-clip-text text-transparent">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#ffd700] animate-pulse shadow-[0_0_3px_rgba(255,215,0,0.25)] shrink-0"></div>
+                    <span className="text-[11px] sm:text-[12px] uppercase tracking-[0.25em] sm:tracking-[0.3em] font-bold bg-gradient-to-r from-[#ffd700] via-[#f0d070] to-[#c9a84c] bg-clip-text text-transparent whitespace-nowrap overflow-hidden text-ellipsis">
                       Connectivity <span className="text-white/35 px-0.5">&amp;</span> Surroundings
                     </span>
                   </div>
@@ -244,7 +245,7 @@ export default function LocationFacts() {
           </motion.div>
 
           {/* Control Deck — nav + CTA */}
-          <div className="flex justify-center w-full mt-8 lg:justify-start">
+          <div className="flex justify-center w-full mt-6 min-[390px]:mt-10 lg:justify-start">
             <motion.div
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -286,7 +287,7 @@ export default function LocationFacts() {
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-current relative z-10 transition-transform duration-500 group-hover/cta:scale-110 group-hover/cta:-rotate-12 shrink-0">
                         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
                       </svg>
-                      <span className="relative z-10 text-[11px] uppercase tracking-[0.15em] font-black whitespace-nowrap">
+                      <span className="relative z-10 text-[9px] min-[390px]:text-[10px] sm:text-[11px] uppercase tracking-[0.1em] sm:tracking-[0.15em] font-black whitespace-nowrap">
                         Register Interest
                       </span>
                     </a>

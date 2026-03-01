@@ -82,15 +82,15 @@ function HeroStats() {
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1.2, delay: 2, ease: "easeOut" }}
-      className="absolute bottom-[3.5rem] min-[480px]:bottom-[4.5rem] sm:bottom-24 left-1/2 -translate-x-1/2 z-30 pointer-events-auto w-[95%] sm:w-auto max-w-[95vw]"
+      className="absolute bottom-20 min-[480px]:bottom-24 sm:bottom-28 left-1/2 -translate-x-1/2 z-30 pointer-events-auto w-[95%] sm:w-auto max-w-[95vw]"
     >
       <motion.div
         animate={{ y: [-3, 3, -3] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        className="flex flex-row items-center justify-center sm:flex-row gap-2 min-[480px]:gap-3 sm:gap-8 md:gap-12 bg-[#0e0c14]/90 backdrop-blur-2xl px-3 min-[480px]:px-4 sm:px-10 py-2.5 min-[480px]:py-3 sm:py-5 rounded-[2rem] sm:rounded-full border border-gold/20 shadow-[0_10px_40px_rgba(0,0,0,0.8),0_0_20px_rgba(196,162,101,0.15)] hover:border-gold/50 transition-all duration-500 w-full overflow-hidden"
+        className="flex flex-row flex-wrap items-center justify-center sm:flex-row gap-2 min-[480px]:gap-3 sm:gap-8 md:gap-12 bg-[#0e0c14]/40 backdrop-blur-[12px] px-3 min-[480px]:px-4 sm:px-10 py-2.5 min-[480px]:py-3 sm:py-5 rounded-3xl min-[430px]:rounded-full border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-gold/50 transition-all duration-500 w-full min-[430px]:w-auto overflow-hidden"
       >
         {stats.map((stat, i) => (
-          <div key={i} className="flex items-center gap-2 sm:gap-5 group relative flex-1 sm:flex-none justify-center">
+          <div key={i} className={`flex items-center gap-2 sm:gap-5 group relative flex-1 min-[430px]:flex-none justify-center ${i !== 0 ? 'border-l border-white/10 pl-2 min-[430px]:border-none min-[430px]:pl-0' : ''}`}>
             <div className="relative w-6 h-6 sm:w-10 sm:h-10 rounded-full bg-[#1a1820] shrink-0 flex items-center justify-center border border-white/5 group-hover:bg-gold/10 transition-all duration-500 overflow-hidden">
               <motion.div
                 className="absolute inset-0 bg-gold/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -127,7 +127,7 @@ export default function Hero() {
   const textY = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
 
   return (
-    <section id="hero" ref={containerRef} className="relative w-full min-h-screen overflow-hidden bg-[#0e0f1a]">
+    <section id="hero" ref={containerRef} className="relative w-full min-h-[100dvh] sm:min-h-screen overflow-hidden bg-[#0e0f1a]">
       {/* ▸ Layer 0: High-Impact Animated Background */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {/* Outer motion.div for continuous pan and zoom */}
@@ -198,10 +198,10 @@ export default function Hero() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[6.5vw] min-[380px]:text-[7.5vw] sm:text-5xl md:text-6xl lg:text-[6.5vw] xl:text-[7rem] leading-[0.85] font-heading font-black text-white tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,1)] whitespace-nowrap"
+              className="text-[10.5vw] min-[400px]:text-[11vw] sm:text-5xl md:text-6xl lg:text-[6.5vw] xl:text-[7rem] leading-[0.95] min-[400px]:leading-[0.85] font-heading font-black text-white tracking-tighter drop-shadow-[0_4px_12px_rgba(0,0,0,1)] text-center sm:whitespace-nowrap flex flex-col sm:inline-block"
             >
-              <span className="drop-shadow-[0_0_30px_rgba(0,0,0,0.8)]">PAVILION</span>{" "}
-              <span className="inline-block relative">
+              <span className="drop-shadow-[0_0_30px_rgba(0,0,0,0.8)] leading-[0.9]">PAVILION</span>{" "}
+              <span className="inline-block relative mt-1 sm:mt-0 leading-[0.9]">
                 {/* Opacity-based glow layer (hardware accelerated) */}
                 <motion.span
                   className="absolute inset-0 gold-gradient-text blur-[12px] z-0"
